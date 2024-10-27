@@ -5,7 +5,7 @@ return {
         GOTOID = 6933626061,
         GameName = "Tlk Prison",
         Script = function() 
-            loadstring(game:HttpGet('https://raw.githubusercontent.com/Zeuxtronic/Zeouron/main/tlk%20prison%20Obfuscated.txt'))()
+            loadstring(game:HttpGet('https://raw.githubusercontent.com/Zeuxtronic/New-Zeouron/refs/heads/main/Fragments/Tlk%20prison.lua'))()
         end
     },
 	{
@@ -14,7 +14,7 @@ return {
         GOTOID = 5561268850,
         GameName = "Randomly Generated Droids",
         Script = function() 
-            loadstring(game:HttpGet('https://raw.githubusercontent.com/Zeuxtronic/Zeouron/main/RGD%20Obfuscated.txt'))()
+            loadstring(game:HttpGet('https://raw.githubusercontent.com/Zeuxtronic/New-Zeouron/refs/heads/main/Fragments/RGD.txt'))()
         end
     },
 	{
@@ -22,7 +22,7 @@ return {
         EngineMain = 5561268850,
         EngineName = "Robot 64",
         Script = function() 
-            loadstring(game:HttpGet('https://raw.githubusercontent.com/Zeuxtronic/Zeouron/main/RGD%20Obfuscated.txt'))()
+            loadstring(game:HttpGet('https://raw.githubusercontent.com/Zeuxtronic/New-Zeouron/refs/heads/main/Fragments/Robot64.lua'))()
         end,
     	EngineDetectionMethod = function()
          	local isengine = false
