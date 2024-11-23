@@ -9,8 +9,9 @@ DownloadAsset = function(asset)
         wait(0.1)
         return "Zeouron/CacheImage/"..asset
     else
-        warn("Failed to Download asset")
+        error("Failed to Download asset")
     end
+	return succ
 end
 return {
     Github = Github,
