@@ -1,3 +1,4 @@
+-- Note, i did not make this Library, i just use it because its really useful
 return {
 		["CD"] = "rbxassetid://7734110220",
 		activity = "rbxassetid://7733655755",
