@@ -16,20 +16,6 @@ Data = {
     IsZ = true
 }
 
---[[
-to-do list
-    
-    get 
-    get candy --one
-    remove ic walls
-    noclip --done
-    goto world
-    killaura (maybe)
-    anti-death --done
-    funny visuals
-    remove gamepass walls
-]]
-
 map = function()
  	return WS:FindFirstChild(WS.plam:FindFirstChild(lp.Name).map.Value)
 end
@@ -38,10 +24,11 @@ plam = function()
  	return WS.plam:FindFirstChild(lp.Name)
 end
 
-local SimpleTab = loadstring(game:HttpGet('https://raw.githubusercontent.com/Zeuxtronic/Zeouron/main/SimpleTab%20Raw.lua'))()
+local SimpleTab = loadstring(game:HttpGet('https://raw.githubusercontent.com/Zeuxtronic/New-Zeouron/refs/heads/main/Library/UI%20library.lua'))()
 
 Beboo = SimpleTab.NewTab("Beboo")
 Map = SimpleTab.NewTab("Map")
+Anti = SimpleTab.NewTab("Anti")
 Visual = SimpleTab.NewTab("Visual")
 
 Visual.NewSwitch("FullBright",function(bool)
@@ -49,11 +36,28 @@ Visual.NewSwitch("FullBright",function(bool)
 end)
 
 Map.NewButton("Get All Candy",function()
+    local staypos = game:GetService("Workspace").char.Position
+    local objs = {}
+    for i,v in pairs(map():GetChildren()) do
+        if v.Name == "candy" then
+            table.insert(objs,v)
+      	end
+    end
+    repeat
+ 	objs = {}
+    for i,v in pairs(map():GetChildren()) do
+        if v.Name == "candy" then
+            table.insert(objs,v)
+      	end
+    end
     for i,v in pairs(map():GetChildren()) do
         if v.Name == "candy" then
             v.Position = game:GetService("Workspace").char.Position
         end
     end
+	game:GetService("Workspace").char.Position = staypos
+	task.wait(0.01)
+	until #objs == 0
 end)
 
 Map.NewButton("Get All Eggs",function()
@@ -133,8 +137,11 @@ game:GetService("RunService").RenderStepped:Connect(function()
 		game.Lighting.GlobalShadows = false
 		game.Lighting.OutdoorAmbient = Color3.fromRGB(128, 128, 128)
     end
-    if autoB and map():FindFirstChild("battery") then
-        map():FindFirstChild("battery").Position = game:GetService("Workspace").char.Position
+    if autoB and map() then
+        if map():FindFirstChild("battery") then
+        	map():FindFirstChild("battery").Position = game:GetService("Workspace").char.Position
+        	map():FindFirstChild("battery").Transparency = 1
+        end
     end
     if noclip then
         game:GetService("Workspace").char.CanCollide = false
