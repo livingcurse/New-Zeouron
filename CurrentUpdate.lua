@@ -1,28 +1,36 @@
-Update 1.3
+Update 1.4
 
-[+] Changed Images to be PNGS instead of RBXAssset.
-[+] Added the Startup menu you are on Currently.
-[+] Added Phone scaling to UI Library.
-[+] Recoded the UI Library.
-[+] New animations
+[+] Script Link
 
-[=] Moved github repository
+(Update 1.31) Startup Menu Improvements:
+	[+] Added a fullscreen button to the Startup changelog
+	[~] Changed Changelog font
+	[+] Changelog textsize resize for phones
 
-Improved the RGD script heavily:
-    [+] Added "Auto Box"
-    [+] Added "Auto Kill Shopkeepers"
-    [+] Added "Autoclicker"
-    [+] Added "AutoEquipBest"
-    [+] Added "AutoHeal"
-    [+] Added "Enable PotionUI"
-    [+] Added "SwordReach"
-    
-    [+] New Tab: "Render"
-    	[+] Added "Esp Enemies"
-    	[+] Added "Esp Allies"
-    	[+] Added "Esp Players"
+RGD improvements:
+	[~] Anti Lava changes
+ 	[+] Auto grab improvements
 
-[+] Added a new type of supported game: "Engine",
-This type of SG works on engines instead of games
+	[+] Skip
+ 	[+] Auto skip
+  	[+] Make Night
+   	[+] Always Night
+    [+] Always Day
+    [+] Sit droids
+    [+] Bring droids
+   	
+    [+] A New tab "Antis":
+    	[+] Anti Tornado
+    	[~] Changed Anti Features to the new "Antis" Tab
 
-[+] New Engine SG: "Robot64"
+Tlk prison Improvements:
+	[-] Infinite Stamina no longer appears to Delta users (Because it crashed them)
+	[~] Changed BypassWalkspeed to "Set WalkSpeed"
+ 	[~] Set WalkSpeed (BypassWalkspeed) uses Character.Humanoid.WalkSpeed now
+  	[+] Loop Essentinal Tools
+   	[+] Bug Fixes
+
+UI library Improvements:
+	[+] Configs: Features will now save when executing a SA
+ 	[+] Visual Improvements
+  	[+] General improvements
