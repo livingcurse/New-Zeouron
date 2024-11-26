@@ -3,6 +3,22 @@ local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 local runService = (game:GetService("RunService")); 
 
+if not isfolder("Zeouron/LibraryConfigs") then
+    makefolder("Zeouron/LibraryConfigs")
+end
+
+if not isfile("Zeouron/LibraryConfigs/"..tostring(game.PlaceId)) then
+    writefile("Zeouron/LibraryConfigs/"..tostring(game.PlaceId),"[]")
+end
+local HttpService = game:GetService("HttpService")
+local configpath = "Zeouron/LibraryConfigs/"..tostring(game.PlaceId)
+local config = HttpService:JSONDecode(readfile(configpath))
+
+local onoff = false
+if readfile("Zeouron/Settings/Onoff.txt") == "true" then
+	onoff = true
+end
+
 constructcolor = function(str)
     local split = string.split(str,",")
     return Color3.fromRGB(tonumber(split[1]),tonumber(split[2]), tonumber(split[3]))
@@ -10,48 +26,21 @@ end
 halvecolor = function(color, num)
     return Color3.new(color.R /num, color.G /num, color.B /num)
 end
-if not isfolder("Zeouron") then
-    makefolder("Zeouron")
-end
-if not isfolder("Zeouron/Settings") then
-    makefolder("Zeouron/Settings")
-end
-if not isfile("Zeouron/Settings/Onoff.txt") then
-	writefile("Zeouron/Settings/Onoff.txt", "true")
-end
-if not isfile("Zeouron/Settings/MainColor.txt") then
-	writefile("Zeouron/Settings/MainColor.txt", "130,35,175")
-end
-if not isfile("Zeouron/Settings/BgColor.txt") then
-	writefile("Zeouron/Settings/BgColor.txt", "10,10,10")
-end
-if not isfile("Zeouron/Settings/Size.txt") then
-	writefile("Zeouron/Settings/Size.txt", "1")
-end
-
-local onoff = false
-if readfile("Zeouron/Settings/Onoff.txt") == "true" then
-	onoff = true
-end
-
 Data = {
-    ScriptName = "Zeouron", -- The name of your script!
+    ScriptName = "Zeouron "..tostring(game.PlaceId),
     
     Color = constructcolor(readfile("Zeouron/Settings/MainColor.txt")),
     DarkC = halvecolor(constructcolor(readfile("Zeouron/Settings/MainColor.txt")), 2.5),
     DarkerC = halvecolor(halvecolor(constructcolor(readfile("Zeouron/Settings/MainColor.txt")), 2.5),1.5),
     BgColor = constructcolor(readfile("Zeouron/Settings/BgColor.txt")),
-    Font = Enum.Font.Arcade,
+    Font = Enum.Font[readfile("Zeouron/Settings/Font.txt")],
     TextColor = constructcolor(readfile("Zeouron/Settings/MainColor.txt")),
     
     OnoffButton = onoff, --Adds a button/keybind that reenables the gui
     OnoffKeybind = "M"
 }
 
-local forcephone = game:GetService("UserInputService").TouchEnabled and (game.Workspace.CurrentCamera.ViewportSize.Y < 460) 
-local function isPhone() 
-    return forcephone
-end
+local isPhone = T.IsPhone
 
 downsize = function(descendant)
     if isPhone() then
@@ -174,9 +163,9 @@ Iconz.Size = UDim2.new(0.05 *1.45,0,0.05 *1.45,0)
 Iconz.BackgroundTransparency = 1
 Iconz.Parent = G
 if readfile("Zeouron/Settings/MainColor.txt") == "130,35,175" then
-	Iconz.Image = "http://www.roblox.com/asset/?id=16688349183"
+	Iconz.Image = T.LoadAsset("LogoMain.png")
 else
-	Iconz.Image = "http://www.roblox.com/asset/?id=111586837232946"
+	Iconz.Image = T.LoadAsset("LogoCustom.png")
  	Iconz.ImageColor3 = Data.Color
 end
 Iconz.Draggable = false
@@ -226,7 +215,7 @@ end
 local Tabs = 0
     
 return {
-	NewTab = function(name)
+	NewTab = function(tabname)
    		Tabs = Tabs +1
     	local counter = Tabs
             
@@ -249,7 +238,7 @@ return {
         TabText.BackgroundTransparency = 1
         TabText.TextColor3 = Data.TextColor
         TabText.TextScaled = true
-    	TabText.Text = name
+    	TabText.Text = tabname
     	TabText.Font = Data.Font        
       
       	local arrow = Instance.new("ImageButton")
@@ -326,7 +315,7 @@ return {
     			TextFrame.Font = Data.Font 
        			TextFrame.TextXAlignment = "Left"
        
-       			local KeybindText = Instance.new("TextLabel")
+       			local KeybindText = Instance.new("TextBox")
     			KeybindText.Parent = ButtonFrame
     			KeybindText.Size = UDim2.new(0,20,0,20)
    				KeybindText.Position = UDim2.new(0,145,0,5)
@@ -341,9 +330,10 @@ return {
         		local KeybindMobile = Instance.new("TextButton")
     			KeybindMobile.Parent = G
     			KeybindMobile.Size = UDim2.new(0,45,0,45)
-   				KeybindMobile.Position = UDim2.new(0,776 +math.random(0,125),0,95 +math.random(0,325))
+   				KeybindMobile.Position = UDim2.new(math.random(50,95) /100,0,math.random(0,75) /100,0)
     			KeybindMobile.BackgroundColor3 = Data.DarkC
-    			KeybindMobile.BorderColor3 = KeybindMobile.BackgroundColor3
+    			KeybindMobile.BorderColor3 = Data.Color
+       			KeybindMobile.BorderSizePixel = 3
     			KeybindMobile.ZIndex = 10
     			KeybindMobile.Text = keybind
     			KeybindMobile.Font = Data.Font
@@ -355,7 +345,7 @@ return {
   				KeybindMobile.Name = keybind
   			   	KeybindMobile.AutoButtonColor = false
          
-         		game:GetService("UserInputService").InputBegan:Connect(function(input)
+         		local keypress = game:GetService("UserInputService").InputBegan:Connect(function(input)
     				if input.KeyCode == enumkeybind then
           				func()
            			end
@@ -363,6 +353,36 @@ return {
       			KeybindMobile.MouseButton1Click:Connect(function()
         			func()
         		end)
+      
+      			KeybindText:GetPropertyChangedSignal("Text"):Connect(function()
+             		local text = KeybindText.Text
+               		if #string.split(text,"") == 1 or #string.split(text,"") == 0 then
+                     	if text:match("%a") ~= nil then
+                     		KeybindText.Text = string.upper(KeybindText.Text)
+                      		KeybindMobile.Text = string.upper(KeybindText.Text)
+                        else
+                        	KeybindText.Text = keybind
+                  			KeybindMobile.Text = keybind
+                        end
+             		else
+               			KeybindText.Text = keybind
+                  		KeybindMobile.Text = keybind
+                    end
+             	end)
+          		KeybindText.FocusLost:Connect(function()
+                	local text = KeybindText.Text
+                 	if #string.split(text,"") == 1 then
+                		keypress:Disconnect()
+                 		keypress = game:GetService("UserInputService").InputBegan:Connect(function(input)
+    						if input.KeyCode == Enum.KeyCode[text] then
+          						func()
+           					end
+        				end)
+       				else
+           				KeybindText.Text = keybind
+                  		KeybindMobile.Text = keybind
+       				end
+                end)
             end,
         	NewSelector = function(name,TableReturn,func)
             	Buttons += 1
@@ -423,14 +443,16 @@ return {
         
 		        local Scroll = Instance.new("ScrollingFrame")
 		    	Scroll.Parent = Dropper
-		    	Scroll.Size = UDim2.new(0,130,0,188)
-		   		Scroll.Position = UDim2.new(0,14,0,72)
+		    	Scroll.Size = UDim2.new(0,144,0,188)
+		   		Scroll.Position = UDim2.new(0,0,0,72)
 		    	Scroll.BackgroundTransparency = 1
 		     	Scroll.BorderColor3 = Data.DarkC
 		    	Scroll.ZIndex = math.huge
 		        Scroll.ScrollBarImageColor3 = Data.Color
-				Scroll.ScrollBarImageTransparency = 0
-				Scroll.CanvasSize = UDim2.new(0,0,0,1900)
+				Scroll.ScrollBarImageTransparency = 1
+				Scroll.CanvasSize = UDim2.new(0,0,0,0)
+    			Scroll.ElasticBehavior = "Never"
+				Scroll.ScrollingDirection = "Y"
              
              	local arrow = Instance.new("ImageButton")
     			arrow.Parent = ButtonFrame
@@ -454,6 +476,7 @@ return {
        			TextFrame.TextXAlignment = "Left"
        
        			LoadTable = function(str, table)
+              		Scroll.CanvasSize = UDim2.new(0,0,0,0)
               		local LastPos = 0
                 
                 	for i,v in pairs(Scroll:GetChildren()) do
@@ -464,8 +487,8 @@ return {
                  		if tostring(v):match(str) then
                        		local label = Instance.new("TextButton")
     						label.Parent = Scroll
-    						label.Size = UDim2.new(0,130,0,22)
-   							label.Position = UDim2.new(0,0,0,LastPos)
+    						label.Size = UDim2.new(1,-28,0,22)
+   							label.Position = UDim2.new(0,14,0,LastPos)
     						label.BackgroundColor3 = Data.DarkC
      						label.BorderColor3 = Data.DarkC
     						label.ZIndex = math.huge
@@ -481,6 +504,7 @@ return {
        							Dropper.Visible = false
                    			end)
            					LastPos += 22
+                			Scroll.CanvasSize = UDim2.new(0,0,0,LastPos)
                         end
                     end
               	end
@@ -625,6 +649,13 @@ return {
         	NewSwitch = function(name, func)
              	Buttons += 1
               	TabFrame.Size = UDim2.new(0,175,0,Buttons *30 +30)
+               
+               	local boolean = config[tabname..name]
+                if boolean == nil then
+                    boolean = false
+                    config[tabname..name] = false
+                    writefile(configpath,HttpService:JSONEncode(config))
+                end
              
             	local ButtonFrame = Instance.new("Frame", TabsContainer)
        			ButtonFrame.Position = UDim2.new(0,0,0,Buttons *30)
@@ -665,8 +696,16 @@ return {
                 		switchon = true
                      	Switch.BackgroundColor3 = Data.Color
                     end
+                	config[tabname..name] = switchon
+                 	writefile(configpath,HttpService:JSONEncode(config))
                 	func(switchon)
              	end)
+          
+          		if boolean == true then
+           			switchon = true
+                    Switch.BackgroundColor3 = Data.Color
+                    func(boolean)
+          		end
             end
         }
     end,
@@ -707,6 +746,7 @@ return {
                 Value.Font = Data.Font
                 Value.TextColor3 = Data.Color
                 Value.TextStrokeColor3 = Data.DarkC
+                Value.TextStrokeTransparency = 0
                 Value.BackgroundTransparency = 1
                 Value.TextXAlignment = "Right"
         	end
