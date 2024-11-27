@@ -19,6 +19,11 @@ if readfile("Zeouron/Settings/Onoff.txt") == "true" then
 	onoff = true
 end
 
+Dev = false
+if readfile("Zeouron/Settings/Developer.txt") == "true" then
+    Dev = true
+end
+
 constructcolor = function(str)
     local split = string.split(str,",")
     return Color3.fromRGB(tonumber(split[1]),tonumber(split[2]), tonumber(split[3]))
@@ -650,12 +655,16 @@ return {
              	Buttons += 1
               	TabFrame.Size = UDim2.new(0,175,0,Buttons *30 +30)
                
-               	local boolean = config[tabname..name]
+               	if Dev then
+               	boolean = config[tabname..name]
                 if boolean == nil then
                     boolean = false
                     config[tabname..name] = false
                     writefile(configpath,HttpService:JSONEncode(config))
                 end
+            	else
+             		boolean = false
+            	end
              
             	local ButtonFrame = Instance.new("Frame", TabsContainer)
        			ButtonFrame.Position = UDim2.new(0,0,0,Buttons *30)
