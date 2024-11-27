@@ -655,16 +655,12 @@ return {
              	Buttons += 1
               	TabFrame.Size = UDim2.new(0,175,0,Buttons *30 +30)
                
-               	if Dev then
                	boolean = config[tabname..name]
                 if boolean == nil then
                     boolean = false
                     config[tabname..name] = false
                     writefile(configpath,HttpService:JSONEncode(config))
                 end
-            	else
-             		boolean = false
-            	end
              
             	local ButtonFrame = Instance.new("Frame", TabsContainer)
        			ButtonFrame.Position = UDim2.new(0,0,0,Buttons *30)
@@ -713,7 +709,9 @@ return {
           		if boolean == true then
            			switchon = true
                     Switch.BackgroundColor3 = Data.Color
-                    func(boolean)
+                    spawn(function()
+                        func(boolean)
+                    end)
           		end
             end
         }
