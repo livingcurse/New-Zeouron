@@ -73,7 +73,7 @@ return {
        	local div = times or 2
        	if tble[2] ~= "Position" and tble[2] ~= "Size" then
     		local TweenInf0 = TweenInfo.new(tble[3]) 
-			local PlayThis = TweenService:Create(tble[1], TweenInf0, {[tble[2]] = tble[4]})
+			local PlayThis = game:GetService("TweenService"):Create(tble[1], TweenInf0, {[tble[2]] = tble[4]})
 			PlayThis:Play()
    		else
      		local setval = tble[4]
@@ -86,7 +86,7 @@ return {
 				)
             end
             local TweenInf0 = TweenInfo.new(tble[3]) 
-			local PlayThis = TweenService:Create(tble[1], TweenInf0, {[tble[2]] = setval})
+			local PlayThis = game:GetService("TweenService"):Create(tble[1], TweenInf0, {[tble[2]] = setval})
 			PlayThis:Play()
   		end
     end,
