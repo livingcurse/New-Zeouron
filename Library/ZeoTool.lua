@@ -50,6 +50,9 @@ LoadAsset = function(asset)
    		return fakeasset(DownloadAsset(asset))
    	end
 end
+IsPhone = function()
+    return game:GetService("UserInputService").TouchEnabled and (game.Workspace.CurrentCamera.ViewportSize.Y < 530) 
+end
 constructcolor = function(str)
     local split = string.split(str,",")
     return Color3.fromRGB(tonumber(split[1]),tonumber(split[2]), tonumber(split[3]))
@@ -65,6 +68,28 @@ return {
 	DownloadAsset = DownloadAsset,
 	LoadAsset = LoadAsset,
  	ConstructFolder = ConstructFolder,
+  	IsPhone = IsPhone,
+  	Tween = function(tble, times)
+       	local div = times or 2
+       	if tble[2] ~= "Position" and tble[2] ~= "Size" then
+    		local TweenInf0 = TweenInfo.new(tble[3]) 
+			local PlayThis = TweenService:Create(tble[1], TweenInf0, {[tble[2]] = tble[4]})
+			PlayThis:Play()
+   		else
+     		local setval = tble[4]
+       		if IsPhone() then
+            	setval = UDim2.new(
+					setval.X.Scale, 
+   					setval.X.Offset /times, 
+    				setval.Y.Scale, 
+    				setval.Y.Offset /times
+				)
+            end
+            local TweenInf0 = TweenInfo.new(tble[3]) 
+			local PlayThis = TweenService:Create(tble[1], TweenInf0, {[tble[2]] = setval})
+			PlayThis:Play()
+  		end
+    end,
  	GetTheme = function()
     	return {
     		Font = Enum.Font[readfile("Zeouron/Settings/Font.txt")],
@@ -77,9 +102,6 @@ return {
     		Icon = T.LoadAsset("LogoCustom.png"),
     		DiscordLink = "https://discord.com/invite/BjrHC26rUP"
 		}
-    end,
- 	IsPhone = function()
-    	return game:GetService("UserInputService").TouchEnabled and (game.Workspace.CurrentCamera.ViewportSize.Y < 530) 
     end,
 	GetLibrary = function(lib)
         local overwrite = {
