@@ -1,4 +1,33 @@
 return function()
+ConstructFolder = function()
+    if not isfolder("Zeouron") then
+    	makefolder("Zeouron")
+	end
+	if not isfolder("Zeouron/Settings") then
+	    makefolder("Zeouron/Settings")
+	end
+	if not isfolder("Zeouron/CacheImage") then
+	    makefolder("Zeouron/CacheImage")
+	end
+	if not isfile("Zeouron/Settings/Onoff.txt") then
+		writefile("Zeouron/Settings/Onoff.txt", "true")
+	end
+	if not isfile("Zeouron/Settings/MainColor.txt") then
+		writefile("Zeouron/Settings/MainColor.txt", "130,35,175")
+	end
+	if not isfile("Zeouron/Settings/BgColor.txt") then
+		writefile("Zeouron/Settings/BgColor.txt", "10,10,10")
+	end
+	if not isfile("Zeouron/Settings/Size.txt") then
+		writefile("Zeouron/Settings/Size.txt", "1")
+	end
+	if not isfile("Zeouron/Settings/Font.txt") then
+		writefile("Zeouron/Settings/Font.txt", "Arcade")
+	end
+	if not isfile("Zeouron/Settings/Developer.txt") then
+		writefile("Zeouron/Settings/Developer.txt", "false")
+	end
+end
 Github = function()
    return "https://raw.githubusercontent.com/Zeuxtronic/New-Zeouron/refs/heads/main/"
 end
@@ -13,49 +42,45 @@ DownloadAsset = function(asset)
     end
 	return succ
 end
+LoadAsset = function(asset)
+	local fakeasset = getcustomasset or getsynasset
+	if isfile("Zeouron/CacheImage/"..asset) then
+		return fakeasset("Zeouron/CacheImage/"..asset)
+	else
+   		return fakeasset(DownloadAsset(asset))
+   	end
+end
+constructcolor = function(str)
+    local split = string.split(str,",")
+    return Color3.fromRGB(tonumber(split[1]),tonumber(split[2]), tonumber(split[3]))
+end
+halvecolor = function(color, num)
+    return Color3.new(color.R /num, color.G /num, color.B /num)
+end
+ConstructFolder()
 return {
+    ConstructColor = constructcolor,
+    HalveColor = halvecolor,
     Github = Github,
 	DownloadAsset = DownloadAsset,
+	LoadAsset = LoadAsset,
+ 	ConstructFolder = ConstructFolder,
+ 	GetTheme = function()
+    	return {
+    		Font = Enum.Font[readfile("Zeouron/Settings/Font.txt")],
+    		Color = constructcolor(readfile("Zeouron/Settings/MainColor.txt")),
+    		DarkC = halvecolor(constructcolor(readfile("Zeouron/Settings/MainColor.txt")), 2.5),
+    		DarkerC = halvecolor(halvecolor(constructcolor(readfile("Zeouron/Settings/MainColor.txt")), 2.5),1.5),
+    		DarkestC = halvecolor(halvecolor(constructcolor(readfile("Zeouron/Settings/MainColor.txt")), 2.5),2.5),
+    		BlackC = Color3.fromRGB(30,30,30),
+    		BgC = constructcolor(readfile("Zeouron/Settings/BgColor.txt")),
+    		Icon = T.LoadAsset("LogoCustom.png"),
+    		DiscordLink = "https://discord.com/invite/BjrHC26rUP"
+		}
+    end,
  	IsPhone = function()
     	return game:GetService("UserInputService").TouchEnabled and (game.Workspace.CurrentCamera.ViewportSize.Y < 530) 
     end,
- 	ConstructFolder = function()
-    	if not isfolder("Zeouron") then
-    		makefolder("Zeouron")
-		end
-		if not isfolder("Zeouron/Settings") then
-		    makefolder("Zeouron/Settings")
-		end
-		if not isfolder("Zeouron/CacheImage") then
-		    makefolder("Zeouron/CacheImage")
-		end
-		if not isfile("Zeouron/Settings/Onoff.txt") then
-			writefile("Zeouron/Settings/Onoff.txt", "true")
-		end
-		if not isfile("Zeouron/Settings/MainColor.txt") then
-			writefile("Zeouron/Settings/MainColor.txt", "130,35,175")
-		end
-		if not isfile("Zeouron/Settings/BgColor.txt") then
-			writefile("Zeouron/Settings/BgColor.txt", "10,10,10")
-		end
-		if not isfile("Zeouron/Settings/Size.txt") then
-			writefile("Zeouron/Settings/Size.txt", "1")
-		end
-		if not isfile("Zeouron/Settings/Font.txt") then
-			writefile("Zeouron/Settings/Font.txt", "Arcade")
-		end
-		if not isfile("Zeouron/Settings/Developer.txt") then
-			writefile("Zeouron/Settings/Developer.txt", "false")
-		end
-    end,
-	LoadAsset = function(asset)
-     	local fakeasset = getcustomasset or getsynasset
-    	if isfile("Zeouron/CacheImage/"..asset) then
-    		return fakeasset("Zeouron/CacheImage/"..asset)
-    	else
-    		return fakeasset(DownloadAsset(asset))
-    	end
-	end,
 	GetLibrary = function(lib)
         local overwrite = {
             ["UI"] = Github().."Library/UI%20library.lua"
