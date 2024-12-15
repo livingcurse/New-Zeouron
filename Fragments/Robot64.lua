@@ -2,19 +2,16 @@ lp = game.Players.LocalPlayer
 local TweenService = game:GetService("TweenService")
 WS = game:GetService("Workspace")
 
-Data = {
-    ScriptName = "SimpleTab Example", -- The name of your script!
-    
-    Color = Color3.fromRGB(255,255,255),
-    DarkC = Color3.fromRGB(255 /2.5,255 /2.5,255 /2.5),
-    BgColor = Color3.fromRGB(10,10,10),
-    Font = Enum.Font.Arcade,
-    TextColor = Color3.fromRGB(255,255,255),
-    
-    OnoffButton = true, --Adds a button/keybind that reenables the gui
-    OnoffKeybind = "M",
-    IsZ = true
+local DataTabWhitelist = {
+    1111083356,
+    14374856202
 }
+local Whitelisted = false
+for i,v in pairs(DataTabWhitelist) do
+    if v == game.PlaceId then
+        Whitelisted = true
+    end
+end
 
 map = function()
  	return WS:FindFirstChild(WS.plam:FindFirstChild(lp.Name).map.Value)
@@ -24,16 +21,152 @@ plam = function()
  	return WS.plam:FindFirstChild(lp.Name)
 end
 
+rejoin = function()
+    if #game:GetService("Players"):GetPlayers() <= 1 then
+		lp:Kick("\nRejoining...")
+		wait()
+		game:GetService("TeleportService"):Teleport(game.PlaceId, lp)
+	else
+		game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId, game.JobId, lp)
+	end
+end
+
 local SimpleTab = loadstring(game:HttpGet('https://raw.githubusercontent.com/Zeuxtronic/New-Zeouron/refs/heads/main/Library/UI%20library.lua'))()
 
 Beboo = SimpleTab.NewTab("Beboo")
 Map = SimpleTab.NewTab("Map")
-Anti = SimpleTab.NewTab("Anti")
-Visual = SimpleTab.NewTab("Visual")
+if Whitelisted then
+DataTab = SimpleTab.NewTab("Data")
 
-Visual.NewSwitch("FullBright",function(bool)
-    fb = bool
+DataTab.NewTextBox("Set Candy", "0",function(text)
+    local TNum = 0
+    local ICNum = 0
+    local CNum = 0
+    if lp.PlayerGui.UI.UI:FindFirstChild("icedcream") then
+    	ICNum = tonumber(lp.PlayerGui.UI.UI.icedcream.tx.Text)
+    end
+    if lp.PlayerGui.UI.UI:FindFirstChild("candy") then
+    	CNum = tonumber(lp.PlayerGui.UI.UI.candy.tx.Text)
+    end
+    if lp.PlayerGui.UI.UI:FindFirstChild("token") then
+    	TNum = tonumber(lp.PlayerGui.UI.UI.token.tx.Text)
+    end
+    
+    ICEn = ""
+    for i=1,ICNum do
+    	ICEn = ICEn.."1"
+    end
+    
+    local number = tonumber(text)
+   	if number ~= nil then
+  		local args = {
+    		[1] = {
+        		[1] = tostring(number),
+        		[2] = "111101111111111111111",
+        		[3] = "1010000000001001002100111101100011001010",
+        		[4] = "5",
+        		[5] = ICEn,
+        		[6] = tostring(TNum),
+        		[7] = "0000",
+        		[8] = "0,",
+        		[9] = "0,",
+        		[10] = 3
+    		}
+		}
+
+		workspace.share.save:FireServer(unpack(args))
+  
+     	wait(2)
+      	rejoin()
+    end
 end)
+
+DataTab.NewTextBox("Set ICs", "0",function(text)
+    local TNum = 0
+    local ICNum = 0
+    local CNum = 0
+    if lp.PlayerGui.UI.UI:FindFirstChild("icedcream") then
+    	ICNum = tonumber(lp.PlayerGui.UI.UI.icedcream.tx.Text)
+    end
+    if lp.PlayerGui.UI.UI:FindFirstChild("candy") then
+    	CNum = tonumber(lp.PlayerGui.UI.UI.candy.tx.Text)
+    end
+    if lp.PlayerGui.UI.UI:FindFirstChild("token") then
+    	TNum = tonumber(lp.PlayerGui.UI.UI.token.tx.Text)
+    end
+    
+    local number = tonumber(text)
+   	if number ~= nil then
+        if number <1001 and number >0 then
+        ICEn = ""
+    	for i=1,number do
+    		ICEn = ICEn.."1"
+    	end
+  		local args = {
+    		[1] = {
+        		[1] = tostring(CNum),
+        		[2] = "111101111111111111111",
+        		[3] = "1010000000001001002100111101100011001010",
+        		[4] = "5",
+        		[5] = ICEn,
+        		[6] = tostring(TNum),
+        		[7] = "0000",
+        		[8] = "0,",
+        		[9] = "0,",
+        		[10] = 3
+    		}
+		}
+
+		workspace.share.save:FireServer(unpack(args))
+     	wait(2)
+      	rejoin()
+       	end
+    end
+end)
+
+DataTab.NewTextBox("Set Tokens", "0",function(text)
+    local TNum = 0
+    local ICNum = 0
+    local CNum = 0
+    if lp.PlayerGui.UI.UI:FindFirstChild("icedcream") then
+    	ICNum = tonumber(lp.PlayerGui.UI.UI.icedcream.tx.Text)
+    end
+    if lp.PlayerGui.UI.UI:FindFirstChild("candy") then
+    	CNum = tonumber(lp.PlayerGui.UI.UI.candy.tx.Text)
+    end
+    if lp.PlayerGui.UI.UI:FindFirstChild("token") then
+    	TNum = tonumber(lp.PlayerGui.UI.UI.token.tx.Text)
+    end
+    
+    ICEn = ""
+    for i=1,ICNum do
+    	ICEn = ICEn.."1"
+    end
+    
+    local number = tonumber(text)
+   	if number ~= nil then
+  		local args = {
+    		[1] = {
+        		[1] = tostring(CNum),
+        		[2] = "111101111111111111111",
+        		[3] = "1010000000001001002100111101100011001010",
+        		[4] = "5",
+        		[5] = ICEn,
+        		[6] = tostring(number),
+        		[7] = "0000",
+        		[8] = "0,",
+        		[9] = "0,",
+        		[10] = 3
+    		}
+		}
+
+		workspace.share.save:FireServer(unpack(args))
+  
+     	wait(2)
+      	rejoin()
+    end
+end)
+end
 
 Map.NewButton("Get All Candy",function()
     local staypos = game:GetService("Workspace").char.Position
@@ -130,13 +263,6 @@ end)
 
 flyspeed = 1
 game:GetService("RunService").RenderStepped:Connect(function()
-    if fb then
-        game.Lighting.Brightness = 2
-		game.Lighting.ClockTime = 14
-		game.Lighting.FogEnd = 100000
-		game.Lighting.GlobalShadows = false
-		game.Lighting.OutdoorAmbient = Color3.fromRGB(128, 128, 128)
-    end
     if autoB and map() then
         if map():FindFirstChild("battery") then
         	map():FindFirstChild("battery").Position = game:GetService("Workspace").char.Position
