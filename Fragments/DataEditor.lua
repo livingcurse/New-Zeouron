@@ -1,6 +1,8 @@
 lp = game.Players.LocalPlayer
 UIS = game:GetService("UserInputService")
 
+local Icons = T.GetLibrary("Icons")
+
 local WhiteL = false
 local list = {}
 
@@ -68,7 +70,7 @@ SearchBox.TextColor3 = Data.Color
 
 local ValueFrame = Instance.new("ScrollingFrame", MainFrame)
 
-ValueFrame.Size = UDim2.new(1,-40,1,-147)
+ValueFrame.Size = UDim2.new(1,-20,1,-147)
 ValueFrame.Position = UDim2.new(0,20,0,147)
 ValueFrame.BackgroundTransparency = 1
 ValueFrame.CanvasSize = UDim2.new(0,0,0,0)
@@ -110,7 +112,7 @@ update = function(t)
    
    		local ValueBox = Instance.new("TextBox", ValueFrame)
 
-		ValueBox.Size = UDim2.new(1,-150,0,25)
+		ValueBox.Size = UDim2.new(1,0,0,25)
 		ValueBox.Position = UDim2.new(0,0,0,line *25 -25)	
 	 	ValueBox.BackgroundTransparency = 1
 		ValueBox.Text = i.." = "..tostring(v)
@@ -121,7 +123,20 @@ update = function(t)
   		ValueBox.TextXAlignment = "Left"
     	ValueFrame.CanvasSize = UDim2.new(0,0,0,line *25 -25)
     	ValueBox.Name = i
-   
+     
+     	local CopyButton = Instance.new("TextButton", ValueFrame)
+
+		CopyButton.Size = UDim2.new(0,20,0,20)
+		CopyButton.Position = UDim2.new(1,-42.5,0,line *25 -25 +2.5)	
+	 	CopyButton.BackgroundColor3 = Data.DarkC
+   		CopyButton.Text = "C"
+		CopyButton.Font = Data.Font
+		CopyButton.TextScaled = true
+		CopyButton.TextColor3 = Data.Color
+       
+       	CopyButton.MouseButton1Click:Connect(function()
+            setclipboard(tostring("getsenv(game.Players.LocalPlayer.PlayerScripts.CharacterScript)."..i.." = "..tostring(v)))
+        end)
     	ValueBox.Changed:Connect(function() 
          	local MaxLength = #string.split(i,"") + 3
           	if #string.split(ValueBox.Text,"") <MaxLength then
