@@ -18,18 +18,18 @@ end
 
 downsize = function(descendant)
     if IsPhone() then
-    descendant.Size = UDim2.new(
-            		descendant.Size.X.Scale,
-        	    	descendant.Size.X.Offset / 1.5, 
-        	    	descendant.Size.Y.Scale, 
-      	     		descendant.Size.Y.Offset / 1.5
-       			)
-     			descendant.Position = UDim2.new(
-            		descendant.Position.X.Scale, 
-            		descendant.Position.X.Offset / 1.5, 
-            		descendant.Position.Y.Scale, 
-            		descendant.Position.Y.Offset / 1.5
-        		)
+    	descendant.Size = UDim2.new(
+            descendant.Size.X.Scale,
+        	descendant.Size.X.Offset / 1.5, 
+        	descendant.Size.Y.Scale, 
+      	    descendant.Size.Y.Offset / 1.5
+       	)
+     	descendant.Position = UDim2.new(
+            descendant.Position.X.Scale, 
+            descendant.Position.X.Offset / 1.5, 
+            descendant.Position.Y.Scale, 
+            descendant.Position.Y.Offset / 1.5
+        )
     end
 end
 
@@ -173,7 +173,7 @@ update = function(t)
 		CopyButton.Font = Data.Font
 		CopyButton.TextScaled = true
 		CopyButton.TextColor3 = Data.Color
-  		downsize(ValueBox)
+  		downsize(CopyButton)
     	if not IsPhone then
 			CopyButton.Position = UDim2.new(1,-42.5,0,line *25 -25 +2.5)	
   		else
