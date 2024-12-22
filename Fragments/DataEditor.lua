@@ -15,7 +15,7 @@ end
 downsize = function(descendant)
     if T.IsPhone() then
     descendant.Size = UDim2.new(
-            		descendant.Size.X.Scal,
+            		descendant.Size.X.Scale,
         	    	descendant.Size.X.Offset / 1.5, 
         	    	descendant.Size.Y.Scale, 
       	     		descendant.Size.Y.Offset / 1.5
