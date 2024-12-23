@@ -1,6 +1,8 @@
 lp = game.Players.LocalPlayer
 UIS = game:GetService("UserInputService")
 
+print("vore")
+
 local Icons = T.GetLibrary("Icons")
 
 local WhiteL = false
@@ -34,7 +36,7 @@ end
 local G = Instance.new("ScreenGui", game.CoreGui)
 G.ResetOnSpawn = false
 G.Name = "TableEditor"
-G.Enabled = true
+G.Enabled = false
 
 local Data = T.GetTheme()
 
