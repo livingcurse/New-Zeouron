@@ -12,9 +12,7 @@ for i,v in pairs(game.CoreGui:GetChildren()) do
 	end
 end
 
-local IsPhone = function()
-    return true 
-end
+local IsPhone = T.IsPhone
 
 downsize = function(descendant)
     if IsPhone() then
@@ -36,7 +34,7 @@ end
 local G = Instance.new("ScreenGui", game.CoreGui)
 G.ResetOnSpawn = false
 G.Name = "TableEditor"
-G.Enabled = false
+G.Enabled = true
 
 local Data = T.GetTheme()
 
@@ -148,7 +146,7 @@ update = function(t)
 	 	ValueBox.BackgroundTransparency = 1
 		ValueBox.Text = i.." = "..tostring(v)
 		ValueBox.Font = Data.Font
-  		if not IsPhone then
+  		if not IsPhone() then
 			ValueBox.TextSize = 30
   		else
     		ValueBox.TextSize = 30 /1.5
@@ -156,7 +154,7 @@ update = function(t)
 		ValueBox.TextColor3 = Data.Color
   		ValueBox.ClearTextOnFocus = false
   		ValueBox.TextXAlignment = "Left"
-    	if not IsPhone then
+    	if not IsPhone() then
     		ValueFrame.CanvasSize = UDim2.new(0,0,0,line *25 -25)
      	else
       		ValueFrame.CanvasSize = UDim2.new(0,0,0,line *16.66 -16.66)
@@ -173,12 +171,8 @@ update = function(t)
 		CopyButton.Font = Data.Font
 		CopyButton.TextScaled = true
 		CopyButton.TextColor3 = Data.Color
+  		CopyButton.Position = UDim2.new(1,-42.5,0,line *25 -25 +2.5)	
   		downsize(CopyButton)
-    	if not IsPhone then
-			CopyButton.Position = UDim2.new(1,-42.5,0,line *25 -25 +2.5)	
-  		else
-    		CopyButton.Position = UDim2.new(1,-28.33,0,line *16.66 -16.66 +1.66)
-    	end
        
        	CopyButton.MouseButton1Click:Connect(function()
             setclipboard(tostring("getsenv(game.Players.LocalPlayer.PlayerScripts.CharacterScript)."..i.." = "..tostring(v)))
@@ -246,6 +240,7 @@ NewBar = function(name,wb,setlist)
  	downsize(BarButton)
  
  	BarButton.MouseButton1Click:Connect(function()
+      	print("fuck")
       	update(getsenv(game.Players.LocalPlayer.PlayerScripts.CharacterScript))
     	WhiteL = wb
 		list = setlist
