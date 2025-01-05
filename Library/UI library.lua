@@ -19,11 +19,6 @@ if readfile("Zeouron/Settings/Onoff.txt") == "true" then
 	onoff = true
 end
 
-Dev = false
-if readfile("Zeouron/Settings/Developer.txt") == "true" then
-    Dev = true
-end
-
 constructcolor = function(str)
     local split = string.split(str,",")
     return Color3.fromRGB(tonumber(split[1]),tonumber(split[2]), tonumber(split[3]))
@@ -141,85 +136,9 @@ local TabsHolder = Instance.new("Frame", G)
 TabsHolder.Visible = true
 TabsHolder.BackgroundTransparency = 1
 
-if Data.OnoffButton then
-	local Go = Instance.new("ScreenGui")
-
-	Go.Parent = lp.PlayerGui
-	Go.Name = Data.ScriptName
-	Go.ResetOnSpawn = false
-	Go.Enabled = true
- 	
-	local Back = Instance.new("Frame")
-	Back.Parent = Go
-	Back.Size = UDim2.new(1,0,1.3,0)
-	Back.Position = UDim2.new(0,0,-0.15,0)
-	Back.BackgroundColor3 = Color3.fromRGB(0,0,0)
- 	Back.BackgroundTransparency = 1
-  	Back.BorderColor3 = Data.Color
-	Back.Selectable = true
-	Back.ZIndex = 0 -math.huge
- 
- 	TabsHolder.Visible = false
-  
-local Iconz = Instance.new("ImageButton")
-
-Iconz.Position = UDim2.new(0.96 -(0.05 *1.45),0,0.5 -0.0725,0)
-Iconz.Size = UDim2.new(0.05 *1.45,0,0.05 *1.45,0)
-Iconz.BackgroundTransparency = 1
-Iconz.Parent = G
-if readfile("Zeouron/Settings/MainColor.txt") == "130,35,175" then
-	Iconz.Image = T.LoadAsset("LogoMain.png")
-else
-	Iconz.Image = T.LoadAsset("LogoCustom.png")
- 	Iconz.ImageColor3 = Data.Color
-end
-Iconz.Draggable = false
-Iconz.Active = true 
-Iconz.Selectable = true
-Iconz.ZIndex = math.huge
-
-local aspectRatio = Instance.new("UIAspectRatioConstraint")
-aspectRatio.AspectRatio = 1
-aspectRatio.Parent = Iconz
-
-local back1 = Instance.new("Frame")
-
-back1.Position = UDim2.new(0.015,0,0.015,0)
-back1.Size = UDim2.new(0.97,0,0.97,0)
-back1.BackgroundColor3 = Data.BgColor
-back1.Parent = Iconz
-back1.ZIndex = 214748363
-
-local back2 = Instance.new("Frame")
-
-back2.Position = UDim2.new(-0.05,0,-0.05,0)
-back2.Size = UDim2.new(1.1,0,1.1,0)
-back2.BackgroundColor3 = Data.Color
-back2.BorderColor3 = Data.Color
-back2.Parent = back1
-back2.ZIndex = 214748362
-
-ison = false
-Iconz.MouseButton1Click:Connect(function()
-	if ison then
-       	local TweenInf0 = TweenInfo.new(0.2) 
-		local PlayThis = TweenService:Create(Back, TweenInf0, {BackgroundTransparency = 1})
-		PlayThis:Play()
-        TabsHolder.Visible = false
-        ison = false
-	else
-       	local TweenInf0 = TweenInfo.new(0.2) 
-		local PlayThis = TweenService:Create(Back, TweenInf0, {BackgroundTransparency = 0.3})
-		PlayThis:Play()
-        TabsHolder.Visible = true
-        ison = true
-	end
-end)
-end
-    
 local Tabs = 0
     
-return {
+returntable = {
 	NewTab = function(tabname)
    		Tabs = Tabs +1
     	local counter = Tabs
@@ -655,7 +574,7 @@ return {
              	Buttons += 1
               	TabFrame.Size = UDim2.new(0,175,0,Buttons *30 +30)
                
-               	boolean = config[tabname..name]
+               	local boolean = config[tabname..name]
                 if boolean == nil then
                     boolean = false
                     config[tabname..name] = false
@@ -709,9 +628,7 @@ return {
           		if boolean == true then
            			switchon = true
                     Switch.BackgroundColor3 = Data.Color
-                    spawn(function()
-                        func(boolean)
-                    end)
+                    func(boolean)
           		end
             end
         }
@@ -761,55 +678,84 @@ return {
       		warn("Value must be a Table")
      	end
     end,
-Popup = function(string, pos)
-    for i,v in pairs(G:GetChildren()) do
-        if v.Name == "info" then
-        	v:Destroy()
-        end
-    end
-	local TextLabel = Instance.new("TextButton")
-	TextLabel.Parent = G
-	TextLabel.Size = UDim2.new(1,0,0.035,0)
- 	TextLabel.Position = UDim2.new(0,0,0.88,0)
- 	if pos == "Top" then
-        TextLabel.Position = UDim2.new(0,0,0,0)
-    end
-	if pos == "Middle" then
-        TextLabel.Position = UDim2.new(0,0,0.5 -(0.035 /2),0)
-    end
-	if pos == "Bottom" then
-        TextLabel.Position = UDim2.new(0,0,0.88,0)
-    end
-	TextLabel.TextScaled = true
-	TextLabel.BackgroundTransparency = 1
-	TextLabel.TextColor3 = Data.TextColor
-	TextLabel.Name = "info"
-	TextLabel.Text = string
- 	TextLabel.TextStrokeTransparency = 0
-  	TextLabel.TextStrokeColor3 = Data.DarkC
-   	TextLabel.Font = Data.Font
-    TextLabel.AutoButtonColor = false
- 
- 	spawn(function()
- 	local msg = ""
- 	for i,v in pairs(string.split(string,"")) do
-    	msg = msg..v
-     	TextLabel.Text = msg
-      	wait(0.02)
-    end
-	wait(3.5)
- 	for i,v in pairs(string.split(string,"")) do
-     	Split = string.split(TextLabel.Text,"")
-        table.remove(Split, #Split)
-        rmsg = ""
-        for i,v in pairs(Split) do
-            rmsg = rmsg..v
-     		TextLabel.Text = rmsg
-        end
-    	
-      	wait(0.01)
-    end
-	TextLabel:Destroy()
- 	end)
-end
+	Popup = function() end,
+	GuiChanged = function() end,
+	Gui = G
 }
+if Data.OnoffButton then
+	local Go = Instance.new("ScreenGui")
+
+	Go.Parent = lp.PlayerGui
+	Go.Name = Data.ScriptName
+	Go.ResetOnSpawn = false
+	Go.Enabled = true
+ 	
+	local Back = Instance.new("Frame")
+	Back.Parent = Go
+	Back.Size = UDim2.new(1,0,1.3,0)
+	Back.Position = UDim2.new(0,0,-0.15,0)
+	Back.BackgroundColor3 = Color3.fromRGB(0,0,0)
+ 	Back.BackgroundTransparency = 1
+  	Back.BorderColor3 = Data.Color
+	Back.Selectable = true
+	Back.ZIndex = 0 -math.huge
+ 
+ 	TabsHolder.Visible = false
+  
+	local Iconz = Instance.new("ImageButton")
+
+	Iconz.Position = UDim2.new(0.96 -(0.05 *1.45),0,0.5 -0.0725,0)
+	Iconz.Size = UDim2.new(0.05 *1.45,0,0.05 *1.45,0)
+	Iconz.BackgroundTransparency = 1
+	Iconz.Parent = G
+	if readfile("Zeouron/Settings/MainColor.txt") == "130,35,175" then
+		Iconz.Image = T.LoadAsset("LogoMain.png")
+	else
+		Iconz.Image = T.LoadAsset("LogoCustom.png")
+	 	Iconz.ImageColor3 = Data.Color
+	end
+	Iconz.Draggable = false
+	Iconz.Active = true 
+	Iconz.Selectable = true
+	Iconz.ZIndex = math.huge
+
+	local aspectRatio = Instance.new("UIAspectRatioConstraint")
+	aspectRatio.AspectRatio = 1
+	aspectRatio.Parent = Iconz
+
+	local back1 = Instance.new("Frame")
+
+	back1.Position = UDim2.new(0.015,0,0.015,0)
+	back1.Size = UDim2.new(0.97,0,0.97,0)
+	back1.BackgroundColor3 = Data.BgColor
+	back1.Parent = Iconz
+	back1.ZIndex = 214748363
+
+	local back2 = Instance.new("Frame")
+
+	back2.Position = UDim2.new(-0.05,0,-0.05,0)
+	back2.Size = UDim2.new(1.1,0,1.1,0)
+	back2.BackgroundColor3 = Data.Color
+	back2.BorderColor3 = Data.Color
+	back2.Parent = back1
+	back2.ZIndex = 214748362
+
+	icon = false
+	Iconz.MouseButton1Click:Connect(function()
+		if icon then
+	       	local TweenInf0 = TweenInfo.new(0.2) 
+			local PlayThis = TweenService:Create(Back, TweenInf0, {BackgroundTransparency = 1})
+			PlayThis:Play()
+	        TabsHolder.Visible = false
+	        icon = false
+		else
+	       	local TweenInf0 = TweenInfo.new(0.2) 
+			local PlayThis = TweenService:Create(Back, TweenInf0, {BackgroundTransparency = 0.3})
+			PlayThis:Play()
+	        TabsHolder.Visible = true
+	        icon = true
+		end
+		returntable.GuiChanged(icon)
+	end)
+end
+return returntable
