@@ -191,6 +191,8 @@ returntable = {
               	arrow.Rotation = 180
             end
         end)
+    
+    	local SwitchData = {}
 
      	return {
         	NewButton = function(name, func)
@@ -610,29 +612,49 @@ returntable = {
      			local SwitchRound = Instance.new("UICorner")
 				SwitchRound.Parent = Switch
 				SwitchRound.CornerRadius = UDim.new(0.07,0.07)
+    
+    			SwitchData[name] = {
+                	boolean,
+                 	func,
+                  	Switch
+                }
        
-       			local switchon = false
        			Switch.MouseButton1Click:Connect(function()
-              		if switchon then
-                    	switchon = false
+              		if SwitchData[name][1] then
+                    	SwitchData[name][1] = false
                      	Switch.BackgroundColor3 = Data.DarkC
                 	else
-                		switchon = true
+                		SwitchData[name][1] = true
                      	Switch.BackgroundColor3 = Data.Color
                     end
-                	config[tabname..name] = switchon
+                	config[tabname..name] = SwitchData[name][1]
                  	writefile(configpath,HttpService:JSONEncode(config))
-                	func(switchon)
+                	func(SwitchData[name][1])
              	end)
           
           		if boolean == true then
-           			switchon = true
                     Switch.BackgroundColor3 = Data.Color
-                    func(boolean)
+                    spawn(function()
+                        func(boolean)
+                    end)
           		end
-            end
+            end,
+        	SetSwitch = function(name,data)
+    			SwitchData[name][1] = data
+     			SwitchData[name][2](data)
+        		
+        		config[tabname..name] = SwitchData[name][1]
+                writefile(configpath,HttpService:JSONEncode(config))
+        		
+      			if data then
+      				SwitchData[name][3].BackgroundColor3 = Data.Color
+        		else
+        			SwitchData[name][3].BackgroundColor3 = Data.DarkC
+        		end
+    		end
         }
     end,
+	Popup = function() end,
 	End = function()
      	if isPhone() then
 		for i,descendant in pairs(G:GetDescendants()) do
@@ -678,7 +700,6 @@ returntable = {
       		warn("Value must be a Table")
      	end
     end,
-	Popup = function() end,
 	GuiChanged = function() end,
 	Gui = G
 }
