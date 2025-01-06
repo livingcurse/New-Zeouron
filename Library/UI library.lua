@@ -207,7 +207,7 @@ returntable = {
           
           		local TextFrame = Instance.new("TextButton", ButtonFrame)
        			TextFrame.Position = UDim2.new(0,8,0,0)
-        		TextFrame.Size = UDim2.new(0,125,0,30)
+        		TextFrame.Size = UDim2.new(0,175,0,30)
         		TextFrame.BackgroundTransparency = 1
           		TextFrame.TextColor3 = Data.TextColor
         		TextFrame.TextScaled = true
