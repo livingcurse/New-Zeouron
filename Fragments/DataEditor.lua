@@ -13,8 +13,7 @@ for i,v in pairs(game.CoreGui:GetChildren()) do
 	end
 end
 
---local IsPhone = T.IsPhone
-local IsPhone = function() return true end
+local IsPhone = T.IsPhone
 downsize = function(descendant)
     if IsPhone() then
     	descendant.Size = UDim2.new(
