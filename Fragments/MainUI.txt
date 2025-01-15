@@ -1,0 +1,1473 @@
+local lp = game.Players.LocalPlayer
+local plr = lp
+local WS = game.Workspace
+local CG = game:GetService("CoreGui")
+local RS = game:GetService("RunService")
+local TS = game:GetService("TweenService")
+
+local Mouse = lp:GetMouse()
+
+local Tabs = {}
+local CurrentTab = "MainTab"
+local ZeoGotoTab = "MainTab"
+
+local SupportedGames = loadstring(game:HttpGet(T.Github().."Supported.txt"))()
+Icons = T.GetLibrary("Icons")
+Data = T.GetTheme()
+
+Dev = false
+if readfile("Zeouron/Settings/Developer.txt") == "true" then
+    Dev = true
+end
+
+if Dev then
+	for i,v in pairs(CG:GetChildren()) do
+	    if v.Name == "ZeouronUI" then
+	        v:Destroy()
+	    end
+	end
+end
+
+resize = function(gui, size)
+if T.IsPhone() then
+for _, descendant in pairs(gui:GetDescendants()) do
+    if descendant:IsA("GuiObject") then
+        -- Scale down the Size
+        descendant.Size = UDim2.new(
+            descendant.Size.X.Scale,
+            descendant.Size.X.Offset / size, 
+            descendant.Size.Y.Scale, 
+            descendant.Size.Y.Offset / size
+        )
+        
+        -- Scale down the Position
+        descendant.Position = UDim2.new(
+            descendant.Position.X.Scale, 
+            descendant.Position.X.Offset / size, 
+            descendant.Position.Y.Scale, 
+            descendant.Position.Y.Offset / size
+        )
+    end
+end
+if not gui:IsA("ScreenGui") then
+    local descendant = gui
+	descendant.Size = UDim2.new(
+            descendant.Size.X.Scale / size,
+            descendant.Size.X.Offset / size, 
+            descendant.Size.Y.Scale / size, 
+            descendant.Size.Y.Offset / size
+        )
+        
+        -- Scale down the Position
+        descendant.Position = UDim2.new(
+            descendant.Position.X.Scale / size, 
+            descendant.Position.X.Offset / size, 
+            descendant.Position.Y.Scale / size, 
+            descendant.Position.Y.Offset / size
+        )
+end
+end
+end
+constructcolor = function(str)
+    local split = string.split(str,",")
+    return Color3.fromRGB(tonumber(split[1]),tonumber(split[2]), tonumber(split[3]))
+end
+halvecolor = function(color, num)
+    return Color3.new(color.R /num, color.G /num, color.B /num)
+end
+
+local Tween = T.Tween
+local Round = function(UI,num)
+    local round = Instance.new("UICorner")
+    round.Parent = UI
+    round.CornerRadius = UDim.new(num,num)
+    return Round
+end
+
+local G = Instance.new("ScreenGui", CG)
+G.ResetOnSpawn = false
+G.Name = "ZeouronUI"
+
+local Popups = {
+YN = function(Title, Description, func)
+    if PopupGui then
+    	Tween({
+			PopupFrame,
+   			"Size",
+   			0.3,
+   		 	UDim2.new(0,360,0,0)
+		})
+		wait(0.3)
+   		PopupGui:Destroy()
+      	PopupGui = nil
+    end
+
+	PopupGui = Instance.new("ScreenGui", G)
+ 	PopupGui.ResetOnSpawn = false
+    
+    PopupFrame = Instance.new("ScrollingFrame", PopupGui)
+
+	PopupFrame.Size = UDim2.new(0,360,0,0)
+	PopupFrame.Position = UDim2.new(0.5,0,0.5,0)
+	PopupFrame.BackgroundColor3 = Data.DarkerC
+ 	PopupFrame.ZIndex = 5
+  	PopupFrame.AnchorPoint = Vector2.new(0.5,0.5)
+   	PopupFrame.ScrollBarImageColor3 = Data.Color
+	PopupFrame.ScrollBarImageTransparency = 0
+	PopupFrame.CanvasSize = UDim2.new(0,0,0,0)
+  
+  	local PopupFrameOutline = Instance.new("Frame", PopupFrame)
+
+	PopupFrameOutline.Size = UDim2.new(0,370,0,190)
+	PopupFrameOutline.Position = UDim2.new(0,-5,0,-5)
+	PopupFrameOutline.BackgroundColor3 = Data.DarkerC
+ 	PopupFrameOutline.ZIndex = 4
+  
+  	local QuestionTitle = Instance.new("TextLabel", PopupFrame)
+
+	QuestionTitle.Size = UDim2.new(1,0,0,30)
+	QuestionTitle.Position = UDim2.new(0,0,0,0)
+	QuestionTitle.BackgroundTransparency = 1
+	QuestionTitle.Text = Title
+	QuestionTitle.Font = Data.Font
+	QuestionTitle.TextScaled = true
+ 	QuestionTitle.TextWrapped = true
+	QuestionTitle.TextColor3 = Data.Color
+   	QuestionTitle.ZIndex = 5
+  	
+   	local QuestionLabel = Instance.new("TextLabel", PopupFrame)
+
+	QuestionLabel.Size = UDim2.new(1,-15,1,0)
+	QuestionLabel.Position = UDim2.new(0,15,0,30)
+	QuestionLabel.BackgroundTransparency = 1
+	QuestionLabel.Text = Description
+	QuestionLabel.Font = Data.Font
+	QuestionLabel.TextSize = 20
+ 	QuestionLabel.TextWrapped = true
+	QuestionLabel.TextColor3 = Data.Color
+ 	QuestionLabel.TextXAlignment = "Left"
+  	QuestionLabel.TextYAlignment = "Top"
+   	QuestionLabel.ZIndex = 5
+    
+    local YesButton = Instance.new("TextButton", PopupFrame)
+
+	YesButton.Size = UDim2.new(0,170,0,50)
+	YesButton.Position = UDim2.new(0,5,0,125)
+	YesButton.BackgroundColor3 = Data.DarkC
+	YesButton.Text = "Yes"
+	YesButton.Font = Data.Font
+	YesButton.TextScaled = true
+	YesButton.TextColor3 = Data.Color
+   	YesButton.ZIndex = 6
+    
+    local NoButton = Instance.new("TextButton", PopupFrame)
+
+	NoButton.Size = UDim2.new(0,170,0,50)
+	NoButton.Position = UDim2.new(0,185,0,125)
+	NoButton.BackgroundColor3 = Data.DarkC
+	NoButton.Text = "No"
+	NoButton.Font = Data.Font
+	NoButton.TextScaled = true
+	NoButton.TextColor3 = Data.Color
+   	NoButton.ZIndex = 6
+    
+    NoButton.MouseButton1Click:Connect(function()
+        Tween({
+			PopupFrame,
+   			"Size",
+   			0.3,
+   		 	UDim2.new(0,360,0,0)
+		})
+		wait(0.3)
+        PopupFrame:Destroy()
+    end)
+
+	YesButton.MouseButton1Click:Connect(function()
+     	spawn(function()
+     	Tween({
+			PopupFrame,
+   			"Size",
+   			0.3,
+   		 	UDim2.new(0,360,0,0)
+		})
+		wait(0.3)
+        PopupFrame:Destroy()
+        end)
+        func()
+    end)
+
+	Tween({
+		PopupFrame,
+   		"Size",
+   		0.3,
+    	UDim2.new(0,360,0,180)
+	})
+  	
+	Round(PopupFrame, 0.02)
+ 	Round(PopupFrameOutline, 0.02)
+ 	Round(YesButton, 0.02)
+ 	Round(NoButton, 0.02)
+  	resize(PopupGui,2)
+end,
+OK = function(Title, Description)
+    if PopupFrame then
+    	Tween({
+			PopupFrame,
+   			"Size",
+   			0.3,
+   		 	UDim2.new(0,360,0,0)
+		})
+		wait(0.3)
+   		PopupFrame:Destroy()
+      	PopupFrame = nil
+    end
+    
+    PopupFrame = Instance.new("ScrollingFrame", G)
+
+	PopupFrame.Size = UDim2.new(0,360,0,0)
+	PopupFrame.Position = UDim2.new(0.5,0,0.5,0)
+	PopupFrame.BackgroundColor3 = Data.DarkerC
+ 	PopupFrame.ZIndex = 5
+  	PopupFrame.BorderSizePixel = 0
+  	PopupFrame.AnchorPoint = Vector2.new(0.5,0.5)
+   	PopupFrame.ScrollBarImageColor3 = Data.Color
+	PopupFrame.ScrollBarImageTransparency = 0
+	PopupFrame.CanvasSize = UDim2.new(0,0,0,0)
+  
+  	local PopupFrameOutline = Instance.new("Frame", PopupFrame)
+
+	PopupFrameOutline.Size = UDim2.new(0,370,0,190)
+	PopupFrameOutline.Position = UDim2.new(0,-5,0,-5)
+	PopupFrameOutline.BackgroundColor3 = Data.DarkerC
+ 	PopupFrameOutline.ZIndex = 4
+  
+  	local QuestionTitle = Instance.new("TextLabel", PopupFrame)
+
+	QuestionTitle.Size = UDim2.new(1,0,0,30)
+	QuestionTitle.Position = UDim2.new(0,0,0,0)
+	QuestionTitle.BackgroundTransparency = 1
+	QuestionTitle.Text = Title
+	QuestionTitle.Font = Data.Font
+	QuestionTitle.TextScaled = true
+ 	QuestionTitle.TextWrapped = true
+	QuestionTitle.TextColor3 = Data.Color
+   	QuestionTitle.ZIndex = 5
+  	
+   	local QuestionLabel = Instance.new("TextLabel", PopupFrame)
+
+	QuestionLabel.Size = UDim2.new(1,-15,1,0)
+	QuestionLabel.Position = UDim2.new(0,15,0,30)
+	QuestionLabel.BackgroundTransparency = 1
+	QuestionLabel.Text = Description
+	QuestionLabel.Font = Data.Font
+	QuestionLabel.TextSize = 20
+ 	QuestionLabel.TextWrapped = true
+	QuestionLabel.TextColor3 = Data.Color
+ 	QuestionLabel.TextXAlignment = "Left"
+  	QuestionLabel.TextYAlignment = "Top"
+   	QuestionLabel.ZIndex = 5
+    
+    local OKButton = Instance.new("TextButton", PopupFrame)
+
+	OKButton.Size = UDim2.new(1,-10,0,50)
+	OKButton.Position = UDim2.new(0,5,0,125)
+	OKButton.BackgroundColor3 = Data.DarkC
+	OKButton.Text = "Okay"
+	OKButton.Font = Data.Font
+	OKButton.TextScaled = true
+	OKButton.TextColor3 = Data.Color
+   	OKButton.ZIndex = 6
+    
+    OKButton.MouseButton1Click:Connect(function()
+        Tween({
+			PopupFrame,
+   			"Size",
+   			0.3,
+   		 	UDim2.new(0,360,0,0)
+		})
+		wait(0.3)
+        PopupFrame:Destroy()
+    end)
+
+	Tween({
+		PopupFrame,
+   		"Size",
+   		0.3,
+    	UDim2.new(0,360,0,180)
+	})
+  	
+	Round(PopupFrame, 0.02)
+ 	Round(PopupFrameOutline, 0.02)
+ 	Round(OKButton, 0.02)
+  	resize(PopupGui,2)
+end
+}
+
+local MainFrame = Instance.new("ScrollingFrame", G)
+
+MainFrame.Size = UDim2.new(0,620,0,460)
+MainFrame.Position = UDim2.new(0.5,0,0.5,0)
+MainFrame.BackgroundColor3 = Data.BgC
+MainFrame.BorderColor3 = Data.DarkerC
+MainFrame.ScrollBarImageTransparency = 0
+MainFrame.CanvasSize = UDim2.new(0,0,0,0)
+MainFrame.AnchorPoint = Vector2.new(0.5,0.5)
+
+local ZeouronLabel = Instance.new("TextButton", MainFrame)
+
+ZeouronLabel.Size = UDim2.new(0,220,0,30)
+ZeouronLabel.Position = UDim2.new(0,200,0,0)
+ZeouronLabel.BackgroundTransparency = 1
+ZeouronLabel.Text = "Zeouron"
+ZeouronLabel.Font = Data.Font
+ZeouronLabel.TextScaled = true
+ZeouronLabel.TextColor3 = Data.Color
+
+local ZeouronLine = Instance.new("Frame", MainFrame)
+
+ZeouronLine.Size = UDim2.new(0,140,0,7.5)
+ZeouronLine.Position = UDim2.new(0,310,0,30)
+ZeouronLine.AnchorPoint = Vector2.new(0.5,0)
+ZeouronLine.BackgroundColor3 = Data.Color
+ZeouronLine.BorderColor3 = Data.Color
+ZeouronLine.BorderSizePixel = 0
+
+local Remove = Instance.new("TextButton", MainFrame)
+
+Remove.Size = UDim2.new(0,30,0,30)
+Remove.Position = UDim2.new(0,590,0,0)
+Remove.BackgroundTransparency = 1
+Remove.Text = "X"
+Remove.Font = Data.Font
+Remove.TextScaled = true
+Remove.TextColor3 = Data.Color
+
+local MinusPlus = Instance.new("TextButton", MainFrame)
+
+MinusPlus.Size = UDim2.new(0,30,0,30)
+MinusPlus.Position = UDim2.new(0,560,0,0)
+MinusPlus.BackgroundTransparency = 1
+MinusPlus.Text = "-"
+MinusPlus.Font = Data.Font
+MinusPlus.TextScaled = true
+MinusPlus.TextColor3 = Data.Color
+
+local ListOpener = Instance.new("ImageButton", MainFrame)
+
+ListOpener.Size = UDim2.new(0,50,0,50)
+ListOpener.Position = UDim2.new(0,25,0,25)
+ListOpener.BackgroundTransparency = 1
+ListOpener.Image = "http://www.roblox.com/asset/?id=8733216068"
+ListOpener.ImageColor3 = Data.Color
+ListOpener.ZIndex = 49
+
+local TabList = Instance.new("ScrollingFrame", MainFrame)
+
+TabList.Size = UDim2.new(0,0,0,460)
+TabList.Position = UDim2.new(0,0,0,0)
+TabList.BackgroundColor3 = Data.DarkestC
+TabList.BorderColor3 = Data.DarkerC
+TabList.ScrollBarImageColor3 = Data.Color
+TabList.ScrollBarImageTransparency = 0
+TabList.CanvasSize = UDim2.new(0,0,0,0)
+TabList.ZIndex = 50
+
+local TabDisable = Instance.new("TextButton", MainFrame)
+
+TabDisable.Size = UDim2.new(0,620 -95,0,460)
+TabDisable.Position = UDim2.new(0,95,0,0)
+TabDisable.BackgroundTransparency = 1
+TabDisable.Text = ""
+TabDisable.Visible = false
+TabDisable.ZIndex = 500
+
+local TabsHolder = Instance.new("Frame", MainFrame)
+TabsHolder.Size = UDim2.new(0,0,0,0)
+TabsHolder.BackgroundTransparency = 1
+
+local NewTab = function(name,icon,desc,hidden,subtab)
+    local icon = icon or ""
+    local desc = desc or ""
+    local hidden = hidden or false
+    local subtab = subtab or false
+    
+    if subtab then
+        hidden = true
+    end
+    
+    local Tab = Instance.new("Frame", TabsHolder)
+	Tab.Size = UDim2.new(0,0,0,0)
+	Tab.BackgroundTransparency = 1
+ 	Tab.Visible = false
+  
+  	if not hidden then
+  	local TabsNum = 0
+  	for i,v in pairs(Tabs) do
+       if not v.Hidden then
+           TabsNum += 1
+       end
+    end
+  
+  	local TabIcon = Instance.new("ImageButton", TabList)
+
+	TabIcon.Size = UDim2.new(0,60,0,60)
+	TabIcon.Position = UDim2.new(0,35 /2,0,(TabsNum *75) +25)
+	TabIcon.BackgroundColor3 = Data.DarkerC
+	TabIcon.BorderColor3 = Data.DarkerC
+ 	TabIcon.Image = icon
+  	TabIcon.ImageColor3 = Data.Color
+	TabIcon.ZIndex = 51
+ 
+ 	TabIcon.MouseButton1Click:Connect(function()
+      	CurrentTab = name
+    	for i,v in pairs(TabsHolder:GetChildren()) do
+        	v.Visible = false
+        end
+       	Tab.Visible = true
+        TabDisable.Visible = false
+        if not subtab then
+            ZeoGotoTab = name
+        end
+    	Tween({
+			TabList,
+   			"Size",
+   			0.3,
+   		 	UDim2.new(0,0,0,460)
+		})
+    end)
+ 	end
+ 
+    Tabs[name] = {
+        Name = name,
+        Icon = icon,
+        Desc = desc,
+        Instance = Tab,
+        IconInstance = TabIcon,
+        Hidden = hidden,
+        Switchto = function()
+            CurrentTab = name
+            for i,v in pairs(TabsHolder:GetChildren()) do
+                v.Visible = false
+            end
+        	Tab.Visible = true
+         	if not subtab then
+            	ZeoGotoTab = name
+             	Tween({
+					ZeouronLine,
+   					"Size",
+   					0.3,
+    				UDim2.new(0,140,0,7.5)
+				})
+        	else
+        		Tween({
+					ZeouronLine,
+   					"Size",
+   					0.3,
+    				UDim2.new(0,0,0,7.5)
+				})
+            end
+        end
+    }
+ 	return Tabs[name]
+end
+
+local SettingsTabButton = Instance.new("ImageButton", TabList)
+
+SettingsTabButton.Size = UDim2.new(0,60,0,60)
+SettingsTabButton.Position = UDim2.new(0,35 /2,0,460 -85)
+SettingsTabButton.BackgroundColor3 = Data.DarkerC
+SettingsTabButton.BorderColor3 = Data.DarkerC
+SettingsTabButton.Image = Icons.settings
+SettingsTabButton.ImageColor3 = Data.Color
+SettingsTabButton.ZIndex = 51
+
+SettingsTab = NewTab("Settings", Icons.code, "", true)
+
+SettingsTabButton.MouseButton1Click:Connect(function()
+    SettingsTab.Switchto()
+   	Tween({
+		TabList,
+   		"Size",
+   		0.3,
+   		UDim2.new(0,0,0,460)
+	})
+end)
+
+MainTab = NewTab("MainTab", Icons.code, "The Tab where you Execute Zeouron!")
+
+local ZeouronIcon = Instance.new("ImageLabel", MainTab.Instance)
+
+ZeouronIcon.Position = UDim2.new(0,128,0,46)
+ZeouronIcon.Size = UDim2.new(0,350,0,350)
+ZeouronIcon.BackgroundTransparency = 1
+ZeouronIcon.ImageColor3 = Data.Color
+ZeouronIcon.Image = Data.Icon
+if readfile("Zeouron/Settings/MainColor.txt") == "130,35,175" then
+	ZeouronIcon.Image = T.LoadAsset("LogoMain.png")
+ 	ZeouronIcon.ImageColor3 = Color3.new(1,1,1)
+end
+
+local Info = Instance.new("ImageButton", MainTab.Instance)
+
+Info.Position = UDim2.new(0,544 -66,0,388)
+Info.Size = UDim2.new(0,55,0,55)
+Info.BackgroundColor3 = Data.DarkC
+Info.ZIndex = 2
+Info.Image = Icons.info
+Info.ImageColor3 = Data.Color
+
+Round(Info, 0.05, 5)
+
+local Exec = Instance.new("ImageButton", MainTab.Instance)
+
+Exec.Position = UDim2.new(0,544,0,388)
+Exec.Size = UDim2.new(0,55,0,55)
+Exec.BackgroundColor3 = Data.DarkC
+Exec.ZIndex = 2
+Exec.Image = Icons.code
+Exec.ImageColor3 = Data.Color
+
+ExecuteScript = function()
+    Tween({
+		Info,
+   		"Position",
+   		1,
+   		UDim2.new(0,544,0,388)
+	})
+    Tween({
+		Exec,
+   		"Position",
+   		1,
+   		UDim2.new(0,620,0,388)
+	})
+    local Scriptsupported = false
+	for i,v in pairs(SupportedGames) do
+     	if v.Type == "Engine" then
+        	if v.EngineDetectionMethod() then
+            	Scriptsupported = true
+             
+             	v.Script()
+           
+           		Popups.OK("Hey!", "Join our discord for: Updates, information, community and more!")
+            end
+        end
+    	if v.ID == game.PlaceId and v.Type == "GameSupport" then
+        	Scriptsupported = true
+         
+         	v.Script()
+           
+           	Popups.OK("Hey!", "Join our discord for: Updates, information, community and more!")
+        elseif v.Type == "GameSupport" then
+        	if v.GOTOID == game.PlaceId and v.GOTOID ~= v.ID then
+             	Scriptsupported = true
+            	Popup(v.WrongSupport, nil, "ok")
+            end
+    	end
+	end
+
+	if not Scriptsupported then
+		Popups.OK("Unfortunately...","Game not supported. Request game support on the Zeouron Discord server")
+  	else
+   		wait(2)
+     	MainFrame.Visible = false
+  	end
+end
+
+Exec.MouseButton1Click:Connect(function()
+    ExecuteScript()
+end)
+
+local DiscordLink = Instance.new("ImageButton", MainTab.Instance)
+
+DiscordLink.Position = UDim2.new(0,22,0,388)
+DiscordLink.Size = UDim2.new(0,55,0,55)
+DiscordLink.BackgroundColor3 = Data.DarkC
+DiscordLink.ZIndex = 2
+DiscordLink.Image = Icons["external-link"]
+DiscordLink.ImageColor3 = Data.Color
+
+DiscordLink.MouseButton1Click:Connect(function()
+    Popups.YN("Discord Community","Would you like to copy the link to the Zeouron Discord Server?",function()
+    	setclipboard(tostring(Data.DiscordLink))
+    end)
+end)
+
+Round(DiscordLink, 0.05, 5)
+
+InfoTab = NewTab("InfoTab", "", "", true,true)
+
+local SupportedGameLabel = Instance.new("TextButton", InfoTab.Instance)
+
+SupportedGameLabel.Size = UDim2.new(0,220,0,20)
+SupportedGameLabel.Position = UDim2.new(0,200,0,60)
+SupportedGameLabel.BackgroundTransparency = 1
+SupportedGameLabel.Text = "Supported Games"
+SupportedGameLabel.Font = Data.Font
+SupportedGameLabel.TextScaled = true
+SupportedGameLabel.TextColor3 = Data.Color
+
+SupportPos = 30
+for _,v in pairs(SupportedGames) do
+    if v.Type == "GameSupport" then
+    SupportPos += 50
+    local frame = Instance.new("Frame", InfoTab.Instance)
+    frame.Size = UDim2.new(0,500,0,40)
+    frame.Position = UDim2.new(0,120/2,0,SupportPos)
+    frame.BackgroundColor3 = Data.DarkerC
+    
+    local label = Instance.new("TextLabel", frame)
+    label.Size = UDim2.new(0,460,0,40)
+    label.BackgroundTransparency = 1
+    label.Position = UDim2.new(0,0,0,0)
+    label.BackgroundColor3 = Data.DarkerC
+    label.Text = v.GameName
+    label.TextColor3 = Data.Color
+    label.TextScaled = true
+    label.TextXAlignment = "Left"
+    label.Font = Data.Font
+    
+    local arrow = Instance.new("TextButton", frame)
+    arrow.Size = UDim2.new(0,40,0,40)
+    arrow.BackgroundTransparency = 1
+    arrow.Position = UDim2.new(0,460,0,0)
+    arrow.BackgroundColor3 = Data.DarkerC
+    arrow.Text = ">"
+    arrow.TextColor3 = Data.Color
+    arrow.TextScaled = true
+    arrow.TextXAlignment = "Left"
+    arrow.Font = Data.Font
+    
+    arrow.MouseButton1Click:Connect(function()
+        Popups.YN("Teleport?","Do you wish to teleport to "..v.GameName,function()
+    		game:GetService("TeleportService"):Teleport(v.GOTOID)
+    	end)
+	end)
+    
+    Round(frame,0.05)
+    end
+end
+
+SupportPos += 50
+
+local SupportedEngineLabel = Instance.new("TextButton", InfoTab.Instance)
+
+SupportedEngineLabel.Size = UDim2.new(0,220,0,20)
+SupportedEngineLabel.Position = UDim2.new(0,200,0,SupportPos)
+SupportedEngineLabel.BackgroundTransparency = 1
+SupportedEngineLabel.Text = "Supported Engines"
+SupportedEngineLabel.Font = Data.Font
+SupportedEngineLabel.TextScaled = true
+SupportedEngineLabel.TextColor3 = Data.Color
+
+SupportPos += 20
+
+for _,v in pairs(SupportedGames) do
+    if v.Type == "Engine" then
+    local frame = Instance.new("Frame", InfoTab.Instance)
+    frame.Size = UDim2.new(0,500,0,40)
+    frame.Position = UDim2.new(0,120/2,0,SupportPos)
+    frame.BackgroundColor3 = Data.DarkerC
+    
+    local label = Instance.new("TextLabel", frame)
+    label.Size = UDim2.new(0,460,0,40)
+    label.BackgroundTransparency = 1
+    label.Position = UDim2.new(0,0,0,0)
+    label.BackgroundColor3 = Data.DarkerC
+    label.Text = v.EngineName
+    label.TextColor3 = Data.Color
+    label.TextScaled = true
+    label.TextXAlignment = "Left"
+    label.Font = Data.Font
+    
+    Round(frame,0.05)
+    SupportPos += 50
+    end
+end
+
+Info.MouseButton1Click:Connect(function()
+    InfoTab.Switchto()
+end)
+
+MainTab.Switchto()
+
+Remove.MouseButton1Click:Connect(function()
+    G:Destroy()
+end)
+
+SettingsFeatures = 0
+local SettingsLib = {
+    NewButton = function(name, func)
+    	local TabFrame = Instance.new("TextButton", SettingsTab.Instance)
+
+		TabFrame.Size = UDim2.new(0,450,0,45)
+		TabFrame.Position = UDim2.new(0,85,0,(SettingsFeatures) +50)
+		TabFrame.BackgroundColor3 = Data.DarkerC
+		TabFrame.Text = name
+		TabFrame.Font = Data.Font
+		TabFrame.TextScaled = true
+		TabFrame.TextColor3 = Data.Color
+    
+    	Round(TabFrame, 0.05)
+     
+    	SettingsFeatures += 55
+    
+    	TabFrame.MouseButton1Click:Connect(function()
+           	spawn(func)
+        end)
+	end,
+	NewColor = function(name, default, func)
+    	local TabFrame = Instance.new("TextButton", SettingsTab.Instance)
+
+		TabFrame.Size = UDim2.new(0,450,0,45)
+		TabFrame.Position = UDim2.new(0,85,0,(SettingsFeatures) +50)
+		TabFrame.BackgroundColor3 = Data.DarkerC
+		TabFrame.Text = name
+		TabFrame.Font = Data.Font
+		TabFrame.TextScaled = true
+		TabFrame.TextColor3 = Data.Color
+    
+    	Round(TabFrame, 0.05)
+     
+     	local ColorBox = Instance.new("TextButton", TabFrame)
+
+		ColorBox.Size = UDim2.new(0,30,0,30)
+		ColorBox.Position = UDim2.new(0,450 -37.5,0,7.5)
+		ColorBox.BackgroundColor3 = default
+		ColorBox.Text = ""
+    
+    	SettingsFeatures += 55
+     
+     	local ColorFrame = Instance.new("Frame", G)
+      
+      	ColorFrame.Size = UDim2.new(0,215,0,30)
+		ColorFrame.Position = UDim2.new(0,TabFrame.AbsolutePosition.X +450 +10,0,TabFrame.AbsolutePosition.Y)
+		ColorFrame.BackgroundColor3 = Data.DarkestC
+  		ColorFrame.BorderSizePixel = 0
+    	
+     	RS.Heartbeat:Connect(function()
+        	if not T.IsPhone() then
+		       	ColorFrame.Position = UDim2.new(0,TabFrame.AbsolutePosition.X +450 +10,0,TabFrame.AbsolutePosition.Y)
+            end
+		end)
+  
+  		local ColorHolder = Instance.new("Frame", ColorFrame)
+      
+      	ColorHolder.Size = UDim2.new(1,-10,1,-10)
+		ColorHolder.Position = UDim2.new(0,5,0,5)
+		ColorHolder.BackgroundTransparency = 1
+  		ColorHolder.BorderSizePixel = 0
+    
+    	local hue = 0
+    	for i=1,100 do
+         	hue = (hue + 0.01)
+          	local fc = Color3.fromHSV(hue, 1, 1)
+           	
+            local ColorF = Instance.new("Frame", ColorHolder)
+      
+      		ColorF.Name = i
+      		ColorF.Size = UDim2.new(0,2,1,0)
+			ColorF.Position = UDim2.new(0,hue *200,0,0)
+			ColorF.BackgroundColor3 = fc
+  			ColorF.BorderSizePixel = 0
+        end
+    
+    	local ColorLine = Instance.new("Frame", ColorHolder)
+      
+      	ColorLine.Size = UDim2.new(0,3,1,0)
+		ColorLine.Position = UDim2.new(0.5,0,0,0)
+		ColorLine.BackgroundColor3 = Color3.new(1,1,1)
+  		ColorLine.BorderSizePixel = 0
+    	ColorLine.AnchorPoint = Vector2.new(0.5,0)
+    
+    	RS.Stepped:Connect(function()
+         	if 
+          		Mouse.X > ColorHolder.AbsolutePosition.X and Mouse.X < ColorHolder.AbsolutePosition.X +ColorHolder.AbsoluteSize.X and
+            	Mouse.Y > ColorHolder.AbsolutePosition.Y and Mouse.Y < ColorHolder.AbsolutePosition.Y +ColorHolder.AbsoluteSize.Y 
+           	then
+        		ColorLine.Position = UDim2.new(0,Mouse.X -ColorHolder.AbsolutePosition.X,0,0)
+          	end
+        end)
+    
+    	TabFrame.MouseButton1Click:Connect(function()
+           	spawn(func)
+        end)
+	end,
+	NewTextBox = function(name, default, func)
+    	local TabFrame = Instance.new("TextBox", SettingsTab.Instance)
+
+		TabFrame.Size = UDim2.new(0,450,0,45)
+  		TabFrame.Position = UDim2.new(0,85,0,(SettingsFeatures) +50)
+		TabFrame.BackgroundColor3 = Data.DarkerC
+		TabFrame.Text = name
+		TabFrame.Font = Data.Font
+		TabFrame.TextScaled = true
+   		TabFrame.TextSize = 23
+		TabFrame.TextColor3 = Data.Color
+    
+   		Round(TabFrame, 0.05)
+    
+   		SettingsFeatures += 55
+    
+   		local BoxContents = default
+   		TabFrame.Focused:Connect(function()
+     		TabFrame.Text = BoxContents
+        end)
+        TabFrame.FocusLost:Connect(function()
+        	BoxContents = TabFrame.Text
+         	local funcs = {
+            	SetText = function(text)
+                	BoxContents = text
+                end
+            }
+            spawn(function()
+            	func(BoxContents, funcs)
+            end)
+            TabFrame.Text = name
+        end)
+    end,
+	NewLabel = function(name)
+    	local TabFrame = Instance.new("TextLabel", SettingsTab.Instance)
+
+		TabFrame.Size = UDim2.new(0,450,0,22.5)
+		TabFrame.Position = UDim2.new(0,85,0,(SettingsFeatures) +50)
+		TabFrame.BackgroundTransparency = 1
+		TabFrame.Text = name
+		TabFrame.Font = Data.Font
+		TabFrame.TextScaled = true
+		TabFrame.TextColor3 = Data.Color
+    
+    	Round(TabFrame, 0.05)
+    
+    	SettingsFeatures += 22.5
+	end,
+	NewSwitch = function(name, func, switch)
+    	local TabFrame = Instance.new("TextLabel", SettingsTab.Instance)
+
+		TabFrame.Size = UDim2.new(0,450,0,45)
+		TabFrame.Position = UDim2.new(0,85,0,(SettingsFeatures) +50)
+		TabFrame.BackgroundColor3 = Data.DarkerC
+		TabFrame.Text = name
+		TabFrame.Font = Data.Font
+		TabFrame.TextScaled = true
+		TabFrame.TextColor3 = Data.Color
+  		print(TabFrame:GetFullName())
+    
+    	local Switcher = Instance.new("TextButton", TabFrame)
+
+		Switcher.Size = UDim2.new(0,30,0,30)
+		Switcher.Position = UDim2.new(0,450 -37.5,0,7.5)
+  		if not switch then
+			Switcher.BackgroundColor3 = Data.DarkC
+   		else
+     		Switcher.BackgroundColor3 = Data.Color
+  		end
+		Switcher.Text = ""
+    
+    	Round(TabFrame, 0.05)
+       	Round(Switcher, 0.05)
+    
+    	SettingsFeatures += 55
+       
+       	local switchon = switch
+       	Switcher.MouseButton1Click:Connect(function()
+        if switchon then
+        	switchon = false
+            Switcher.BackgroundColor3 = Data.DarkC
+            spawn(function()
+            	func(false)
+            end)
+        else
+        	switchon = true
+            Switcher.BackgroundColor3 = Data.Color
+            spawn(function()
+           		func(true)
+            end)
+       	end
+	end)
+end,
+}
+
+--SettingsLib.NewColor("Color", Data.Color, function(color) end)
+
+red = tostring(math.round(constructcolor(readfile("Zeouron/Settings/MainColor.txt")).R *255))
+blue = tostring(math.round(constructcolor(readfile("Zeouron/Settings/MainColor.txt")).G *255))
+green = tostring(math.round(constructcolor(readfile("Zeouron/Settings/MainColor.txt")).B *255))
+Colorprevtext = red..","..blue..","..green
+SettingsLib.NewTextBox("Color", Colorprevtext, function(text, textbox)
+    if #string.split(text, ",") == 3 then
+        print(text)
+        local split = string.split(text, ",")
+        split[1] = split[1]:gsub("%D", "")
+        split[2] = split[2]:gsub("%D", "")
+        split[3] = split[3]:gsub("%D", "")
+        if string.split(split[1], "") == 0 then
+        	split[1] = 0
+        end
+    	if string.split(split[2], "") == 0 then
+        	split[2] = 0
+        end
+    	if string.split(split[3], "") == 0 then
+        	split[3] = 0
+        end
+        Colorprevtext = tostring(tonumber(split[1]))..","..tostring(tonumber(split[2]))..","..tostring(tonumber(split[3]))
+        writefile("Zeouron/Settings/MainColor.txt", Colorprevtext)
+        UpdateTheme()
+        ChangeTab(ExecuteTab)
+    else
+    	textbox.SetText(Colorprevtext)
+    end
+end)
+
+red = tostring(math.round(constructcolor(readfile("Zeouron/Settings/BgColor.txt")).R *255))
+blue = tostring(math.round(constructcolor(readfile("Zeouron/Settings/BgColor.txt")).G *255))
+green = tostring(math.round(constructcolor(readfile("Zeouron/Settings/BgColor.txt")).B *255))
+Bgprevtext = red..","..blue..","..green
+SettingsLib.NewTextBox("Background Color", Bgprevtext, function(text, textbox)
+    if #string.split(text, ",") == 3 then
+        print(text)
+        local split = string.split(text, ",")
+        split[1] = split[1]:gsub("%D", "")
+        split[2] = split[2]:gsub("%D", "")
+        split[3] = split[3]:gsub("%D", "")
+        if string.split(split[1], "") == 0 then
+        	split[1] = 0
+        end
+    	if string.split(split[2], "") == 0 then
+        	split[2] = 0
+        end
+    	if string.split(split[3], "") == 0 then
+        	split[3] = 0
+        end
+        Bgprevtext = tostring(tonumber(split[1]))..","..tostring(tonumber(split[2]))..","..tostring(tonumber(split[3]))
+        writefile("Zeouron/Settings/BgColor.txt", Bgprevtext)
+        UpdateTheme()
+        ChangeTab(ExecuteTab)
+    else
+    	textbox.SetText(Bgprevtext)
+    end
+end)
+
+
+visibillitybutton = false
+if readfile("Zeouron/Settings/Onoff.txt") == "true" then
+    visibillitybutton = true
+end 
+SettingsLib.NewSwitch("Visiblility button", function(bool)
+    writefile("Zeouron/Settings/Onoff.txt", tostring(bool))
+    Iconz.Visible = bool
+end,visibillitybutton)
+
+SettingsLib.NewButton("Restart", function()
+    loadstring(game:HttpGet(Github().."/Main.lua"))()
+end)
+
+UniversalTab = NewTab("Universal", Icons.gamepad, "Features that work on (almost) every game!")
+UniversalTabs = NewTab("", "", "",true,true)
+
+local UniversalFeatures = 0
+local tabamount = 0
+local UniversalLib = {
+    newtab = function(name)
+        local TabFrame = Instance.new("TextLabel", UniversalTab.Instance)
+
+		TabFrame.Size = UDim2.new(0,450,0,45)
+		TabFrame.Position = UDim2.new(0,85,0,(tabamount *55) +50)
+		TabFrame.BackgroundColor3 = Data.DarkC
+		TabFrame.Text = name
+		TabFrame.Font = Data.Font
+		TabFrame.TextScaled = true
+		TabFrame.TextColor3 = Data.Color
+  
+  		local TabArrow = Instance.new("TextButton", TabFrame)
+
+		TabArrow.Size = UDim2.new(0,45,0,45)
+		TabArrow.Position = UDim2.new(0,405,0,0)
+		TabArrow.BackgroundTransparency = 1
+		TabArrow.Text = ">"
+		TabArrow.Font = Data.Font
+		TabArrow.TextScaled = true
+		TabArrow.TextColor3 = Data.Color
+  
+  		local NewUniversalTab = Instance.new("Frame", UniversalTabs.Instance)
+		NewUniversalTab.BackgroundTransparency = 1
+  		NewUniversalTab.Visible = false
+    
+    	TabArrow.MouseButton1Click:Connect(function()
+         	UniversalTabs.Switchto()
+        	for i,v in pairs(UniversalTabs.Instance:GetChildren()) do
+            	v.Visible = false
+            end
+        	NewUniversalTab.Visible = true
+        end)
+  
+  		Round(TabFrame, 0.05)
+  
+  		tabamount += 1
+        
+        local UniversalFeatures = 0
+        
+        local functions = {
+            NewButton = function(name, func)
+                local TabFrame = Instance.new("TextButton", NewUniversalTab)
+
+				TabFrame.Size = UDim2.new(0,450,0,45)
+				TabFrame.Position = UDim2.new(0,85,0,(UniversalFeatures) +50)
+				TabFrame.BackgroundColor3 = Data.DarkerC
+				TabFrame.Text = name
+				TabFrame.Font = Data.Font
+				TabFrame.TextScaled = true
+				TabFrame.TextColor3 = Data.Color
+    
+    			Round(TabFrame, 0.05)
+    
+    			UniversalFeatures += 55
+    
+    			TabFrame.MouseButton1Click:Connect(function()
+           			spawn(func)
+          		end)
+            end,
+        	NewLabel = function(name)
+                local TabFrame = Instance.new("TextLabel", NewUniversalTab)
+
+				TabFrame.Size = UDim2.new(0,450,0,22.5)
+				TabFrame.Position = UDim2.new(0,85,0,(UniversalFeatures) +50)
+				TabFrame.BackgroundTransparency = 1
+				TabFrame.Text = name
+				TabFrame.Font = Data.Font
+				TabFrame.TextScaled = true
+				TabFrame.TextColor3 = Data.Color
+    
+    			Round(TabFrame, 0.05)
+    
+    			UniversalFeatures += 22.5
+            end,
+        	NewTextBox = function(name, default, func)
+                local TabFrame = Instance.new("TextBox", NewUniversalTab)
+
+				TabFrame.Size = UDim2.new(0,450,0,45)
+				TabFrame.Position = UDim2.new(0,85,0,(UniversalFeatures) +50)
+				TabFrame.BackgroundColor3 = Data.DarkerC
+				TabFrame.Text = name
+				TabFrame.Font = Data.Font
+				TabFrame.TextScaled = true
+    			TabFrame.TextSize = 23
+				TabFrame.TextColor3 = Data.Color
+    
+    			Round(TabFrame, 0.05)
+    
+    			UniversalFeatures += 55
+    
+    			local BoxContents = default
+    			TabFrame.Focused:Connect(function()
+           			TabFrame.Text = BoxContents
+          		end)
+          		TabFrame.FocusLost:Connect(function()
+           			BoxContents = TabFrame.Text
+              		spawn(function()
+                    	func(BoxContents)
+                    end)
+              		TabFrame.Text = name
+          		end)
+            end,
+        	NewSwitch = function(name, func)
+                local TabFrame = Instance.new("TextLabel", NewUniversalTab)
+
+				TabFrame.Size = UDim2.new(0,450,0,45)
+				TabFrame.Position = UDim2.new(0,85,0,(UniversalFeatures) +50)
+				TabFrame.BackgroundColor3 = Data.DarkerC
+				TabFrame.Text = name
+				TabFrame.Font = Data.Font
+				TabFrame.TextScaled = true
+				TabFrame.TextColor3 = Data.Color
+    
+    			local Switcher = Instance.new("TextButton", TabFrame)
+
+				Switcher.Size = UDim2.new(0,30,0,30)
+				Switcher.Position = UDim2.new(0,450 -37.5,0,7.5)
+				Switcher.BackgroundColor3 = Data.DarkC
+				Switcher.Text = ""
+    
+    			Round(TabFrame, 0.05)
+       			Round(Switcher, 0.05)
+    
+    			UniversalFeatures += 55
+       
+       			local switchon = false
+       			Switcher.MouseButton1Click:Connect(function()
+              		if switchon then
+                    	switchon = false
+                     	Switcher.BackgroundColor3 = Data.DarkC
+                      	spawn(function()
+                        	func(false)
+                        end)
+                    else
+                    	switchon = true
+                     	Switcher.BackgroundColor3 = Data.Color
+                      	spawn(function()
+                        	func(true)
+                        end)
+                    end
+                end)
+            end
+        }
+    	return functions
+    end
+}
+
+local ESPTab = UniversalLib.newtab("ESP")
+
+ESPTab.NewSwitch("Chams", function(bool)
+    chams = bool
+    if not bool then
+        for i,v in pairs(game.Players:GetChildren()) do
+        	if v.character:FindFirstChild("ZeouronChams") then
+            	v.character:FindFirstChild("ZeouronChams"):Destroy()
+            end
+        end
+    end
+end)
+
+
+ESPTab.NewSwitch("Name", function(bool)
+    showname = bool
+    if not bool then
+        for i,v in pairs(game.Players:GetChildren()) do
+            if v.character:FindFirstChild("ZeouronNameBillboard") then
+                v.character:FindFirstChild("ZeouronNameBillboard"):Destroy()
+          	end
+        end
+    end
+end)
+
+local lines = {}
+ESPTab.NewSwitch("Lines", function(bool)
+    Esplines = bool
+    while wait(1) do
+        for i,v in pairs(lines) do
+	    	v[2]:Remove()
+	    end
+		lines = {}
+    end
+end)
+
+local fov = 0 
+local maxDistance = 100
+local maxTransparency = 0.5
+local teamCheck = false
+
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+local Players = game:GetService("Players")
+local Cam = game.Workspace.CurrentCamera
+
+local FOVring = Drawing.new("Circle")
+FOVring.Visible = true
+FOVring.Thickness = 2
+FOVring.Color = Data.Color
+FOVring.Filled = false
+FOVring.Radius = fov
+FOVring.Position = Cam.ViewportSize / 2
+
+local function updateDrawings()
+    local camViewportSize = Cam.ViewportSize
+    FOVring.Position = camViewportSize / 2
+    FOVring.Radius = fov
+end
+
+local function lookAt(target)
+    local lookVector = (target - Cam.CFrame.Position).unit
+    local newCFrame = CFrame.new(Cam.CFrame.Position, Cam.CFrame.Position + lookVector)
+    Cam.CFrame = newCFrame
+end
+
+local function calculateTransparency(distance)
+    local maxDistance = fov
+    local transparency = (1 - (distance / maxDistance)) * maxTransparency
+    return transparency
+end
+
+local function isPlayerAlive(player)
+    local character = player.Character
+    if character and character:FindFirstChild("Humanoid") then
+        return character.Humanoid.Health > 0
+    end
+    return false
+end
+
+local function getClosestPlayerInFOV(trg_part)
+    local nearest = nil
+    local last = math.huge
+    local playerMousePos = Cam.ViewportSize / 2
+    local localPlayer = Players.LocalPlayer
+
+    for i = 1, #Players:GetPlayers() do
+        local player = Players:GetPlayers()[i]
+        if player and player ~= localPlayer and (not teamCheck or player.Team ~= localPlayer.Team) then
+            if isPlayerAlive(player) then
+                local part = player.Character and player.Character:FindFirstChild(trg_part)
+                if part then
+                    local ePos, isVisible = Cam:WorldToViewportPoint(part.Position)
+                    local distance = (Vector2.new(ePos.x, ePos.y) - playerMousePos).Magnitude
+
+                    if distance < last and isVisible and distance < fov and distance < maxDistance then
+                        last = distance
+                        nearest = player
+                    end
+                end
+            end
+        end
+    end
+
+    return nearest
+end
+
+
+
+RS.RenderStepped:Connect(function()
+    updateDrawings()
+    local closest = getClosestPlayerInFOV("Head")
+    if closest and closest.Character:FindFirstChild("Head") then
+        lookAt(closest.Character.Head.Position)
+    end
+    
+    if closest then
+        local ePos, isVisible = Cam:WorldToViewportPoint(closest.Character.Head.Position)
+        local distance = (Vector2.new(ePos.x, ePos.y) - (Cam.ViewportSize / 2)).Magnitude
+        FOVring.Transparency = calculateTransparency(distance)
+    else
+        FOVring.Transparency = maxTransparency
+    end
+    
+    wait(0.03)
+end)
+
+local AimbotTab = UniversalLib.newtab("CameraAimbot")
+
+local aimbotfov = 40
+
+AimbotTab.NewSwitch("Aimbot on", function(bool)
+    if bool then
+        fov = aimbotfov
+    else
+    	fov = 0
+    end
+end)
+
+AimbotTab.NewSwitch("Ignore Teamates", function(bool)
+    teamCheck = bool
+end)
+
+AimbotTab.NewTextBox("Aimbot Fov", aimbotfov, function(text)
+    aimbotfov = tonumber(text)
+    if fov ~= 0 then
+        fov = tonumber(text)
+    end
+end)
+
+AimbotTab.NewLabel("Credit")
+
+AimbotTab.NewButton("== Dollynho ==", function() end)
+
+local MouseAimbotTab = UniversalLib.newtab("MouseAimbot")
+
+MouseAimbotTab.NewLabel("This aimbot doesnt work on most games, and very buggy.")
+MouseAimbotTab.NewLabel("Main")
+
+local MousePos = Drawing.new("Circle")
+MousePos.Visible = false
+MousePos.Thickness = 2
+MousePos.Color = Data.Color
+MousePos.Filled = false
+MousePos.Radius = 40
+MousePos.Position = Vector2.new(0,0)
+
+MouseAimbotTab.NewSwitch("Aimbot On", function(bool)
+    MouseAimbot = bool
+    if not bool then
+        MousePos.Visible = false
+    end
+end)
+
+MouseAimbotTab.NewSwitch("Ignore Teamates", function(bool)
+    teamCheck = bool
+end)
+
+local FrameExpanded = true
+MinusPlus.MouseButton1Click:Connect(function()
+    if FrameExpanded then
+        FrameExpanded = false
+        Tween({
+			MainFrame,
+   			"Size",
+      		0.6,
+        	UDim2.new(0,620,0,30)
+		})
+    else
+    	FrameExpanded = true
+    	Tween({
+			MainFrame,
+   			"Size",
+      		0.6,
+        	UDim2.new(0,620,0,460)
+		})
+    end
+end)
+
+TabDisable.MouseButton1Click:Connect(function()
+    TabDisable.Visible = false
+    Tween({
+		TabList,
+   		"Size",
+   		0.3,
+    	UDim2.new(0,0,0,460)
+	})
+end)
+ListOpener.MouseButton1Click:Connect(function()
+    TabDisable.Visible = true
+    Tween({
+		TabList,
+   		"Size",
+   		0.3,
+    	UDim2.new(0,95,0,460)
+	})
+end)
+ZeouronLabel.MouseButton1Click:Connect(function()
+	Tabs[ZeoGotoTab].Switchto()
+end)
+
+RS.Stepped:Connect(function()
+    if MouseAimbot then
+		local chr = lp.character
+        local lowest = math.huge
+        local NearestPlayer = {}
+        for _,plr in pairs(game:FindFirstChildOfClass("Players"):GetPlayers()) do
+            if plr.character then
+            	local _,inview = game.Workspace.CurrentCamera:WorldToViewportPoint(plr.character:FindFirstChild("Head").Position)
+             	if teamCheck == false then
+            		if plr ~= lp and plr.Character:FindFirstChildOfClass("Humanoid").Health ~= 0 and inview then
+                		local distance = plr:DistanceFromCharacter(chr.HumanoidRootPart.Position)
+               		 	if distance < lowest then
+                	    	lowest = distance
+                	    	NearestPlayer = {plr}
+                		end
+           			end
+         		else
+           			if plr ~= lp and plr.Character:FindFirstChildOfClass("Humanoid").Health ~= 0 and inview and lp.character.TeamColor ~= plr.character.TeamColor then
+                		local distance = plr:DistanceFromCharacter(chr.HumanoidRootPart.Position)
+               		 	if distance < lowest then
+                	    	lowest = distance
+                	    	NearestPlayer = {plr}
+                		end
+           			end
+         		end
+       		end
+       end
+       for i,v in pairs(NearestPlayer) do
+           	local screenPosition, inview = game.Workspace.CurrentCamera:WorldToScreenPoint(v.character:FindFirstChild("HumanoidRootPart").Position)
+            if inview then
+            	MousePos.Position = Vector2.new(screenPosition.X, screenPosition.Y)
+             	MousePos.Visible = true
+              	mousemoveabs(screenPosition.X, screenPosition.Y) 
+         	end
+        end
+    end
+    if showname then
+        for i,v in pairs(game.Players:GetChildren()) do
+        if not v.character:FindFirstChild("ZeouronNameBillboard") then
+        local BillboardGui = Instance.new("BillboardGui")
+		local TextLabel = Instance.new("TextLabel")
+     
+		BillboardGui.Adornee = v.Character.Head
+		BillboardGui.Name = "ZeouronNameBillboard"
+	 	BillboardGui.Parent = v.character
+		BillboardGui.Size = UDim2.new(0, 100, 0, 150)
+		BillboardGui.StudsOffset = Vector3.new(0, 1, 0)
+		BillboardGui.AlwaysOnTop = true
+     
+		TextLabel.Parent = BillboardGui
+		TextLabel.BackgroundTransparency = 1
+		TextLabel.Position = UDim2.new(0, 0, 0, -50)
+		TextLabel.Size = UDim2.new(0, 100, 0, 100)
+		TextLabel.Font = Data.Font
+  		TextLabel.TextSize = 17
+		TextLabel.TextColor3 = v.TeamColor.Color
+		TextLabel.TextStrokeTransparency = 0.3
+		TextLabel.TextYAlignment = Enum.TextYAlignment.Bottom
+		TextLabel.Text = v.DisplayName
+		TextLabel.ZIndex = 1
+  		end
+  		end
+    end
+    if chams then
+        for i,v in pairs(game.Players:GetChildren()) do
+            if not v.character:FindFirstChild("ZeouronChams") then
+                local hl = Instance.new("Highlight")
+    			hl.FillColor = v.TeamColor.Color
+       			hl.OutlineTransparency = 1
+        		hl.Parent = v.character
+          		hl.Name = "ZeouronChams"
+            end
+        end
+    	for i,v in pairs(game.Players:GetChildren()) do
+         	if v.character ~= nil and v.character:WaitForChild("HumanoidRootPart") then
+            	local _,inview = workspace.CurrentCamera:WorldToScreenPoint(v.character.HumanoidRootPart.Position)
+             	if not inview then
+                	if v.character:FindFirstChild("ZeouronChams") then
+                    	v.character:FindFirstChild("ZeouronChams"):Destroy()
+                    end
+                end
+            end
+        end
+    end
+	if Esplines then
+    for i,v in pairs(game.Players:GetPlayers()) do
+        local hasline = false
+        for i,l in pairs(lines) do
+            if l[1] == v then
+            	hasline = true
+     		end
+        end
+    	if not hasline then
+         	local line = Drawing.new("Line") 
+        	line.Visible = true 
+        	line.From = game.Workspace.CurrentCamera.ViewportSize /2
+        	line.To = Vector2.new(0,0,0,0)
+           	line.Color = Color3.fromRGB(255,255,255) 
+        	line.Thickness = 4
+        	line.Transparency = 1
+         
+        	table.insert(lines, {v, line})
+        end
+        
+		if v.character then
+        	if v.character:FindFirstChild("HumanoidRootPart") then
+				for i,u in pairs(lines) do
+        			if u[1] == v then
+               			local screenPosition, inview = workspace.CurrentCamera:WorldToScreenPoint(v.character:FindFirstChild("HumanoidRootPart").Position)
+                  		if not inview then
+               				u[2].Transparency = 0
+                  		else
+                    		u[2].Transparency = 1
+                     	end
+                  		if u[1] == lp then
+                        	u[2].Transparency = 0
+                        end
+               			
+               
+               			u[2].From = game.Workspace.CurrentCamera.ViewportSize /2
+        				u[2].To = Vector2.new(screenPosition.X, screenPosition.Y)
+            			u[2].Color = v.TeamColor.Color
+              		end
+       			end
+        	end
+    	end
+    end
+	else
+		for i,v in pairs(lines) do
+	    	v[2]:Remove()
+	    end
+		lines = {}
+	end
+end)
+
+resize(G,2)
