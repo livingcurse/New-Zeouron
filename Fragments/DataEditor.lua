@@ -1,7 +1,8 @@
 lp = game.Players.LocalPlayer
 UIS = game:GetService("UserInputService")
-
 local Icons = T.GetLibrary("Icons")
+
+local ST
 
 local WhiteL = false
 local list = {}
@@ -12,7 +13,8 @@ for i,v in pairs(game.CoreGui:GetChildren()) do
 	end
 end
 
-local IsPhone = T.IsPhone
+--local IsPhone = T.IsPhone
+local IsPhone = function() return true end
 downsize = function(descendant)
     if IsPhone() then
     	descendant.Size = UDim2.new(
@@ -77,6 +79,7 @@ X.ZIndex = 200
 
 X.MouseButton1Click:Connect(function()
     G.Enabled = false
+    ST = nil
 end)
 
 downsize(X)
@@ -110,10 +113,116 @@ ValueFrame.ScrollingDirection = "Y"
 
 downsize(ValueFrame)
 
-charscriptvals = {}
-for i,v in pairs(getsenv(game.Players.LocalPlayer.PlayerScripts.CharacterScript)) do
-    charscriptvals[i] = 0
-end
+local TableFrame = Instance.new("ScrollingFrame", G)
+
+TableFrame.Size = UDim2.new(0,365,0,350)
+TableFrame.BackgroundColor3 = Data.BgC
+TableFrame.BorderColor3 = Data.DarkerC
+TableFrame.ScrollBarImageTransparency = 0
+TableFrame.CanvasSize = UDim2.new(0,0,0,0)
+TableFrame.AnchorPoint = Vector2.new(0.5,0.5)
+TableFrame.ZIndex = 5 *10000
+TableFrame.Visible = false
+downsize(TableFrame)
+TableFrame.Position = UDim2.new(0.5,ValueFrame.AbsoluteSize.X,0.5,0)
+
+local TableTitleLabel = Instance.new("TextButton", TableFrame)
+
+TableTitleLabel.Size = UDim2.new(1,0,0,25)
+TableTitleLabel.Position = UDim2.new(0,0,0,0)
+TableTitleLabel.BackgroundTransparency = 1
+TableTitleLabel.Text = "Table name here"
+TableTitleLabel.Font = Data.Font
+TableTitleLabel.TextScaled = true
+TableTitleLabel.TextColor3 = Data.Color
+TableTitleLabel.ZIndex = 6 *10000
+
+downsize(TableTitleLabel)
+
+local TableX = Instance.new("TextButton", TableFrame)
+
+TableX.Size = UDim2.new(0,25,0,25)
+TableX.Position = UDim2.new(1,-25,0,0)
+TableX.BackgroundTransparency = 1
+TableX.Text = "X"
+TableX.Font = Data.Font
+TableX.TextScaled = true
+TableX.TextColor3 = Data.Color
+TableX.ZIndex = 6 *10000
+
+TableX.MouseButton1Click:Connect(function()
+    TableFrame.Visible = false
+end)
+
+downsize(TableX)
+
+local TableValueFrame = Instance.new("ScrollingFrame", TableFrame)
+
+TableValueFrame.Size = UDim2.new(1,-20,1,-35)
+TableValueFrame.Position = UDim2.new(0,20,0,35)
+TableValueFrame.BackgroundTransparency = 1
+TableValueFrame.CanvasSize = UDim2.new(0,0,0,0)
+TableValueFrame.ScrollBarImageColor3 = Data.Color
+TableValueFrame.ScrollBarImageTransparency = 1
+TableValueFrame.ElasticBehavior = "Never"
+TableValueFrame.ScrollingDirection = "Y"
+TableValueFrame.ZIndex = 7 *10000
+
+local UserInputService = game:GetService("UserInputService")
+local runService = (game:GetService("RunService")); 
+local gui = TableFrame
+
+local dragging
+local dragInput
+local dragStart
+local startPos
+local WILLDRAG = true
+
+function Lerp(a, b, m)
+	return a + (b - a) * m
+end;
+
+local lastMousePos
+local lastGoalPos
+local DRAG_SPEED = (8); -- // The speed of the UI darg.
+function Update(dt)
+    if WILLDRAG then
+	if not (startPos) then return end;
+	if not (dragging) and (lastGoalPos) then
+		gui.Position = UDim2.new(startPos.X.Scale, Lerp(gui.Position.X.Offset, lastGoalPos.X.Offset, dt * DRAG_SPEED), startPos.Y.Scale, Lerp(gui.Position.Y.Offset, lastGoalPos.Y.Offset, dt * DRAG_SPEED))
+		return 
+	end;
+
+	local delta = (lastMousePos - UserInputService:GetMouseLocation())
+	local xGoal = (startPos.X.Offset - delta.X);
+	local yGoal = (startPos.Y.Offset - delta.Y);
+	lastGoalPos = UDim2.new(startPos.X.Scale, xGoal, startPos.Y.Scale, yGoal)
+	gui.Position = UDim2.new(startPos.X.Scale, Lerp(gui.Position.X.Offset, xGoal, dt * DRAG_SPEED), startPos.Y.Scale, Lerp(gui.Position.Y.Offset, yGoal, dt * DRAG_SPEED))
+ 	end
+end;
+
+gui.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+		dragging = true
+		dragStart = input.Position
+		startPos = gui.Position
+		lastMousePos = UserInputService:GetMouseLocation()
+
+		input.Changed:Connect(function()
+			if input.UserInputState == Enum.UserInputState.End then
+				dragging = false
+			end
+		end)
+	end
+end)
+
+gui.InputChanged:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+		dragInput = input
+	end
+end)
+
+runService.Heartbeat:Connect(Update)
 
 round = function(num)
     return math.round(num *100) /100
@@ -124,13 +233,15 @@ local filters = {
     ["string"] = true,
     ["number"] = true,
     ["Instance"] = false,
-    ["function"] = false
+    ["function"] = false,
+    ["table"] = false
 }
 
-update = function(t)
-    if not UIS:GetFocusedTextBox() or UIS:GetFocusedTextBox().Parent ~= ValueFrame then
+local InsertValues = function(t,frame,istable)
+    local frame = frame or ValueFrame
+    if not UIS:GetFocusedTextBox() or UIS:GetFocusedTextBox().Parent ~= frame then
     t = t
-    for i,v in pairs(ValueFrame:GetChildren()) do
+    for i,v in pairs(frame:GetChildren()) do
         if UIS:GetFocusedTextBox() ~= v then
         	v:Destroy()
         end
@@ -138,38 +249,39 @@ update = function(t)
     local line = 0
 	for i,v in pairs(t) do
      	local ignore = false
-     	if not WhiteL then
+     	if not WhiteL and not istable then
           	ignore = false
         	if list[i] then
             	ignore = true
             end
-        else
+        elseif not istable then
         	ignore = true
          	if list[i] then
             	ignore = false
             end
     	end
- 		if filters[typeof(v)] ~= true then
+ 		if filters[typeof(v)] ~= true and not istable then
        		ignore = true
       	end
      
     	local searchstring = i..tostring(v)
      	if 
-      		typeof(v) == "number" and charscriptvals[i] == 0 and searchstring:match(SearchBox.Text) and not ignore or 
-      		typeof(v) == "boolean" and charscriptvals[i] == 0 and searchstring:match(SearchBox.Text) and not ignore or
-        	typeof(v) == "string" and charscriptvals[i] == 0 and searchstring:match(SearchBox.Text) and not ignore or
-         	typeof(v) == "Instance" and charscriptvals[i] == 0 and searchstring:match(SearchBox.Text) and not ignore or
-          	typeof(v) == "function" and charscriptvals[i] == 0 and searchstring:match(SearchBox.Text) and not ignore 
+      		typeof(v) == "number" and searchstring:match(SearchBox.Text) and not ignore or 
+      		typeof(v) == "boolean" and searchstring:match(SearchBox.Text) and not ignore or
+        	typeof(v) == "string" and searchstring:match(SearchBox.Text) and not ignore or
+         	typeof(v) == "Instance" and searchstring:match(SearchBox.Text) and not ignore or
+          	typeof(v) == "function" and searchstring:match(SearchBox.Text) and not ignore or
+           	typeof(v) == "table" and searchstring:match(SearchBox.Text) and not ignore
       	then
  		line += 1
    
    		local ValueBox
-   		if typeof(v) ~= "Instance" or typeof(v) ~= "function" then
-   			ValueBox = Instance.new("TextBox", ValueFrame)
+   		if typeof(v) ~= "Instance" and typeof(v) ~= "function" and typeof(v) ~= "table" then
+   			ValueBox = Instance.new("TextBox", frame)
       	else
-       		ValueBox = Instance.new("TextLabel", ValueFrame)
+       		ValueBox = Instance.new("TextLabel", frame)
        	end
-
+    
 		ValueBox.Size = UDim2.new(1,0,0,25)
 		ValueBox.Position = UDim2.new(0,0,0,line *25 -25)	
 	 	ValueBox.BackgroundTransparency = 1
@@ -181,7 +293,9 @@ update = function(t)
      		ValueBox.Text = i.." = "..v.Name
      	elseif typeof(v) == "function" then
       		ValueBox.Text = "function "..i.."()"
-      	else
+      	elseif typeof(v) == "table" then
+       		ValueBox.Text = i.." = table:"
+       	else
      		ValueBox.Text = i.." = "..tostring(v)
       	end
 		ValueBox.Font = Data.Font
@@ -191,43 +305,52 @@ update = function(t)
     		ValueBox.TextSize = 30 /1.5
      	end
 		ValueBox.TextColor3 = Data.Color
-  		if typeof(v) ~= "Instance" then
+  		if typeof(v) ~= "Instance" and typeof(v) ~= "function" and typeof(v) ~= "table" then
   			ValueBox.ClearTextOnFocus = false
     	end
   		ValueBox.TextXAlignment = "Left"
     	if not IsPhone() then
-    		ValueFrame.CanvasSize = UDim2.new(0,0,0,line *25 -25)
+    		frame.CanvasSize = UDim2.new(0,0,0,line *25 -25)
      	else
-      		ValueFrame.CanvasSize = UDim2.new(0,0,0,line *16.66 -16.66)
+      		frame.CanvasSize = UDim2.new(0,0,0,line *16.66 -16.66)
      	end
     	ValueBox.Name = i
-     	ValueBox.ZIndex = 4000
+     	ValueBox.ZIndex = frame.ZIndex +10
      
      	downsize(ValueBox)
       
-      	if typeof(v) == "function" then
-        local RunButton = Instance.new("TextButton", ValueFrame)
+      	if typeof(v) == "function" or typeof(v) == "table" then
+        local SecondButton = Instance.new("TextButton", frame)
 
-		RunButton.Size = UDim2.new(0,20,0,20)
-	 	RunButton.BackgroundColor3 = Data.DarkC
-   		RunButton.Text = "R"
-		RunButton.Font = Data.Font
-		RunButton.TextScaled = true
-		RunButton.TextColor3 = Data.Color
-  		RunButton.ZIndex = 4100
-  		downsize(RunButton)
+		SecondButton.Size = UDim2.new(0,20,0,20)
+	 	SecondButton.BackgroundColor3 = Data.DarkC
+   		if typeof(v) == "function" then
+   			SecondButton.Text = "R"
+      	else
+       		SecondButton.Text = "V"
+       	end
+		SecondButton.Font = Data.Font
+		SecondButton.TextScaled = true
+		SecondButton.TextColor3 = Data.Color
+  		SecondButton.ZIndex = frame.ZIndex +110
+  		downsize(SecondButton)
   		if not IsPhone() then
-  			RunButton.Position = UDim2.new(1,-67.5,0,line *25 -25 +2.5)	
+  			SecondButton.Position = UDim2.new(1,-67.5,0,line *25 -25 +2.5)	
      	else
-      		RunButton.Position = UDim2.new(1,-67.5 /1.5,0,line *(25 /1.5) -(25 /1.5) +(2.5 /1.5))	
+      		SecondButton.Position = UDim2.new(1,-67.5 /1.5,0,line *(25 /1.5) -(25 /1.5) +(2.5 /1.5))	
       	end
    
-   		RunButton.MouseButton1Click:Connect(function()
-        	t[i]()
+   		SecondButton.MouseButton1Click:Connect(function()
+         	if typeof(v) == "function" then
+        		t[i]()
+          	else
+           		ST = v
+             	TableTitleLabel.Text = i
+           	end
         end)
         end
      
-     	local CopyButton = Instance.new("TextButton", ValueFrame)
+     	local CopyButton = Instance.new("TextButton", frame)
 
 		CopyButton.Size = UDim2.new(0,20,0,20)
 	 	CopyButton.BackgroundColor3 = Data.DarkC
@@ -235,7 +358,7 @@ update = function(t)
 		CopyButton.Font = Data.Font
 		CopyButton.TextScaled = true
 		CopyButton.TextColor3 = Data.Color
-  		CopyButton.ZIndex = 4100
+  		CopyButton.ZIndex = frame.ZIndex +110
   		downsize(CopyButton)
   		if not IsPhone() then
   			CopyButton.Position = UDim2.new(1,-42.5,0,line *25 -25 +2.5)	
@@ -254,7 +377,7 @@ update = function(t)
            		setclipboard(tostring("getsenv(game.Players.LocalPlayer.PlayerScripts.CharacterScript)."..i.."()"))
          	end
         end)
-    	if typeof(v) ~= "Instance" or typeof(v) ~= "function" then
+    	if typeof(v) ~= "Instance" and typeof(v) ~= "function" and typeof(v) ~= "table" then
     	ValueBox.Changed:Connect(function() 
          	local MaxLength = #string.split(i,"") + 3
           	if #string.split(ValueBox.Text,"") <MaxLength then
@@ -299,6 +422,16 @@ update = function(t)
  		end
  	end
 	end
+end
+
+update = function(t)
+    InsertValues(t,ValueFrame)
+    if ST then
+        InsertValues(ST,TableValueFrame,true)
+        TableFrame.Visible = true
+  	else
+  		TableFrame.Visible = false
+    end
 end
 
 update(getsenv(game.Players.LocalPlayer.PlayerScripts.CharacterScript))
