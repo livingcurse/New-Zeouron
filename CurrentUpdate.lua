@@ -1,36 +1,43 @@
-Update 1.4
+Update 1.5
 
-[+] Script Link
+[~] Complete Recode of MainUI Fragment
 
-(Update 1.31) Startup Menu Improvements:
-    [+] Added a fullscreen button to the Startup changelog
-    [~] Changed Changelog font
-    [+] Changelog textsize resize for phones
+Added ALOT of Robot64 engine Features:
+	Beboo Tab:
+		[+] Get Powerup
+		[+] No Damage
+		[+] God Mode
+		[+] Water Fly
+		[+] Inf Jump
 
-RGD improvements:
-    [~] Anti Lava changes
-    [+] Auto grab improvements
+	Map Tab:
+		[~] Made most Get buttons better
+		[-] Remove DLC wall
+    
+	New Visual Tab:
+		[+] RGB Skin
+		[+] Always dance
+		[+] No anims
+		[+] Randomize
+		[+] Spam Hats
+		[+] Spam Skins
+		[+] Scale
+        
+	New Fun Tab:
+		[+] Spawn Icecream
+		[+] Spam Particles
+		[+] Spam Candies
+		[+] Spawn Enemy
+    
+	New Data Tab:
+		[+] "Data Editor" Allows you to basically edit Robot64 memory.
+		[+] Set Candy
+		[+] Set Icecream
+		[+] Set Tokens
+		[+] Reset Clothing
+		[+] Unlock Skins
+		[+] Unlock Hats
+		[+] Save
 
-    [+] Skip
-    [+] Auto skip
-    [+] Make Night
-    [+] Always Night
-    [+] Always Day
-    [+] Sit droids
-    [+] Bring droids
-   	
-    [+] A New tab "Antis":
-    	[+] Anti Tornado
-    	[~] Changed Anti Features to the new "Antis" Tab
-
-Tlk prison Improvements:
-    [-] Infinite Stamina no longer appears to Delta users (Because it crashed them)
-    [~] Changed BypassWalkspeed to "Set WalkSpeed"
-    [~] Set WalkSpeed (BypassWalkspeed) uses Character.Humanoid.WalkSpeed now
-    [+] Loop Essentinal Tools
-    [+] Bug Fixes
-
-UI library Improvements:
-    [+] Configs: Features will now save when executing a SA
-    [+] Visual Improvements
-    [+] General improvements
+This update took abit..
+But i hope you robot64 players enjoy.
