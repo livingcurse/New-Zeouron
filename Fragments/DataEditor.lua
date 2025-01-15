@@ -73,7 +73,7 @@ X.Text = "X"
 X.Font = Data.Font
 X.TextScaled = true
 X.TextColor3 = Data.Color
-X.ZIndex = 2
+X.ZIndex = 200
 
 X.MouseButton1Click:Connect(function()
     G.Enabled = false
@@ -201,6 +201,7 @@ update = function(t)
       		ValueFrame.CanvasSize = UDim2.new(0,0,0,line *16.66 -16.66)
      	end
     	ValueBox.Name = i
+     	ValueBox.ZIndex = 4000
      
      	downsize(ValueBox)
       
@@ -213,6 +214,7 @@ update = function(t)
 		RunButton.Font = Data.Font
 		RunButton.TextScaled = true
 		RunButton.TextColor3 = Data.Color
+  		RunButton.ZIndex = 4100
   		downsize(RunButton)
   		if not IsPhone() then
   			RunButton.Position = UDim2.new(1,-67.5,0,line *25 -25 +2.5)	
@@ -233,6 +235,7 @@ update = function(t)
 		CopyButton.Font = Data.Font
 		CopyButton.TextScaled = true
 		CopyButton.TextColor3 = Data.Color
+  		CopyButton.ZIndex = 4100
   		downsize(CopyButton)
   		if not IsPhone() then
   			CopyButton.Position = UDim2.new(1,-42.5,0,line *25 -25 +2.5)	
@@ -307,7 +310,7 @@ List.Position = UDim2.new(0,0,0,0)
 List.BackgroundTransparency = 1
 List.Image = "http://www.roblox.com/asset/?id=8733216068"
 List.ImageColor3 = Data.Color
-List.ZIndex = 2
+List.ZIndex = 20000
 
 downsize(List)
 
@@ -320,7 +323,7 @@ ListFrame.BorderSizePixel = 2
 ListFrame.ScrollBarImageTransparency = 0
 ListFrame.CanvasSize = UDim2.new(0,0,0,0)
 ListFrame.Visible = false
-ListFrame.ZIndex = 10
+ListFrame.ZIndex = 10000
 downsize(ListFrame)
 if not IsPhone() then
 	ListFrame.Position = UDim2.new(0,40,0,4)
@@ -346,20 +349,28 @@ for i,f in pairs(filters) do
 	filter.Size = UDim2.new(1,0,0,30)
 	filter.Position = UDim2.new(0,0,0,30 *index -30)
 	filter.BackgroundTransparency = 1
-	filter.ZIndex = 11
+	filter.ZIndex = 11000
  
  	downsize(filter)
+  
+  	local text = string.split(i,"")
+   	text[1] = string.upper(text[1])
+    
+    local msg = ""
+    for i,v in pairs(text) do
+        msg = msg..v
+    end
  
  	local filterText = Instance.new("TextLabel", filter)
 
 	filterText.Size = UDim2.new(1,-35,0,30)
 	filterText.Position = UDim2.new(0,35,0,0)
 	filterText.BackgroundTransparency = 1
- 	filterText.Text = i
+ 	filterText.Text = msg
 	filterText.Font = Data.Font
 	filterText.TextScaled = true
 	filterText.TextColor3 = Data.Color
-	filterText.ZIndex = 12
+	filterText.ZIndex = 12000
  
  	downsize(filterText)
  
@@ -368,7 +379,7 @@ for i,f in pairs(filters) do
    	Switch.Position = UDim2.new(0,5,0,5)
     Switch.BackgroundColor3 = Data.DarkerC
     Switch.BorderSizePixel = 0
-    Switch.ZIndex = 12
+    Switch.ZIndex = 12000
     Switch.Text = ""
     Switch.AutoButtonColor = false
     
@@ -418,6 +429,7 @@ NewBar = function(name,wb,setlist)
 	BarButton.Font = Data.Font
 	BarButton.TextScaled = true
 	BarButton.TextColor3 = Data.Color
+ 	BarButton.ZIndex = 2000
  
  	downsize(BarButton)
  
