@@ -264,6 +264,9 @@ local InsertValues = function(t,frame,istable)
       	end
      
     	local searchstring = i..tostring(v)
+     	if istable then
+        	searchstring = ""
+        end
      	if 
       		typeof(v) == "number" and searchstring:match(SearchBox.Text) and not ignore or 
       		typeof(v) == "boolean" and searchstring:match(SearchBox.Text) and not ignore or
