@@ -264,16 +264,17 @@ local InsertValues = function(t,frame,istable)
       	end
      
     	local searchstring = i..tostring(v)
+     	local searchboxText = SearchBox.Text
      	if istable then
-        	searchstring = ""
+        	searchboxText = ""
         end
      	if 
-      		typeof(v) == "number" and searchstring:match(SearchBox.Text) and not ignore or 
-      		typeof(v) == "boolean" and searchstring:match(SearchBox.Text) and not ignore or
-        	typeof(v) == "string" and searchstring:match(SearchBox.Text) and not ignore or
-         	typeof(v) == "Instance" and searchstring:match(SearchBox.Text) and not ignore or
-          	typeof(v) == "function" and searchstring:match(SearchBox.Text) and not ignore or
-           	typeof(v) == "table" and searchstring:match(SearchBox.Text) and not ignore
+      		typeof(v) == "number" and searchstring:match(searchboxText) and not ignore or 
+      		typeof(v) == "boolean" and searchstring:match(searchboxText) and not ignore or
+        	typeof(v) == "string" and searchstring:match(searchboxText) and not ignore or
+         	typeof(v) == "Instance" and searchstring:match(searchboxText) and not ignore or
+          	typeof(v) == "function" and searchstring:match(searchboxText) and not ignore or
+           	typeof(v) == "table" and searchstring:match(searchboxText) and not ignore
       	then
  		line += 1
    
@@ -337,9 +338,17 @@ local InsertValues = function(t,frame,istable)
   		SecondButton.ZIndex = frame.ZIndex +110
   		downsize(SecondButton)
   		if not IsPhone() then
-  			SecondButton.Position = UDim2.new(1,-67.5,0,line *25 -25 +2.5)	
+        	if not istable then
+  				SecondButton.Position = UDim2.new(1,-67.5,0,line *25 -25 +2.5)	
+      		else
+        		SecondButton.Position = UDim2.new(1,-34.5,0,line *25 -25 +2.5)	
+        	end
      	else
-      		SecondButton.Position = UDim2.new(1,-67.5 /1.5,0,line *(25 /1.5) -(25 /1.5) +(2.5 /1.5))	
+      		if not istable then
+  				SecondButton.Position = UDim2.new(1,-67.5 /1.5,0,line *(25 /1.5) -(25 /1.5) +(2.5 /1.5))	
+      		else
+        		SecondButton.Position = UDim2.new(1,-34.5 /1.5,0,line *(25 /1.5) -(25 /1.5) +(2.5 /1.5))	
+        	end
       	end
    
    		SecondButton.MouseButton1Click:Connect(function()
@@ -352,6 +361,7 @@ local InsertValues = function(t,frame,istable)
         end)
         end
      
+     	if not istable then
      	local CopyButton = Instance.new("TextButton", frame)
 
 		CopyButton.Size = UDim2.new(0,20,0,20)
@@ -379,6 +389,7 @@ local InsertValues = function(t,frame,istable)
            		setclipboard(tostring("getsenv(game.Players.LocalPlayer.PlayerScripts.CharacterScript)."..i.."()"))
          	end
         end)
+    	end
     	if typeof(v) ~= "Instance" and typeof(v) ~= "function" and typeof(v) ~= "table" then
     	ValueBox.Changed:Connect(function() 
          	local MaxLength = #string.split(i,"") + 3
