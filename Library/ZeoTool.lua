@@ -43,7 +43,7 @@ Tween = function(tble, times)
 		PlayThis:Play()
    	else
      	local setval = tble[4]
-       	if true then
+       	if IsPhone() then
            	setval = UDim2.new(
 				setval.X.Scale, 
    				setval.X.Offset /div, 
