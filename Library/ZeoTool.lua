@@ -1,4 +1,8 @@
-return function()
+ZTF = function() 
+local G = Instance.new("ScreenGui",game.CoreGui)
+G.ResetOnSpawn = false
+G.Name = "ZeoTool"
+    
 ConstructFolder = function()
     if not isfolder("Zeouron") then
     	makefolder("Zeouron")
@@ -28,6 +32,30 @@ ConstructFolder = function()
 		writefile("Zeouron/Settings/Developer.txt", "false")
 	end
 end
+IsPhone = function()
+    return game:GetService("UserInputService").TouchEnabled and (game.Workspace.CurrentCamera.ViewportSize.Y < 530) 
+end
+Tween = function(tble, times)
+    local div = times or 2
+    if tble[2] ~= "Position" and tble[2] ~= "Size" then
+   		local TweenInf0 = TweenInfo.new(tble[3]) 
+		local PlayThis = game:GetService("TweenService"):Create(tble[1], TweenInf0, {[tble[2]] = tble[4]})
+		PlayThis:Play()
+   	else
+     	local setval = tble[4]
+       	if true then
+           	setval = UDim2.new(
+				setval.X.Scale, 
+   				setval.X.Offset /div, 
+    			setval.Y.Scale, 
+    			setval.Y.Offset /div
+			)
+        end
+        local TweenInf0 = TweenInfo.new(tble[3]) 
+		local PlayThis = game:GetService("TweenService"):Create(tble[1], TweenInf0, {[tble[2]] = setval})
+		PlayThis:Play()
+  	end
+end
 Github = function()
    return "https://raw.githubusercontent.com/Zeuxtronic/New-Zeouron/refs/heads/main/"
 end
@@ -50,15 +78,33 @@ LoadAsset = function(asset)
    		return fakeasset(DownloadAsset(asset))
    	end
 end
-IsPhone = function()
-    return game:GetService("UserInputService").TouchEnabled and (game.Workspace.CurrentCamera.ViewportSize.Y < 530) 
-end
 constructcolor = function(str)
     local split = string.split(str,",")
     return Color3.fromRGB(tonumber(split[1]),tonumber(split[2]), tonumber(split[3]))
 end
 halvecolor = function(color, num)
     return Color3.new(color.R /num, color.G /num, color.B /num)
+end
+GetTheme = function()
+    	return {
+    		Font = Enum.Font[readfile("Zeouron/Settings/Font.txt")],
+    		Color = constructcolor(readfile("Zeouron/Settings/MainColor.txt")),
+    		DarkC = halvecolor(constructcolor(readfile("Zeouron/Settings/MainColor.txt")), 2.5),
+    		DarkerC = halvecolor(halvecolor(constructcolor(readfile("Zeouron/Settings/MainColor.txt")), 2.5),1.5),
+    		DarkestC = halvecolor(halvecolor(constructcolor(readfile("Zeouron/Settings/MainColor.txt")), 2.5),2.5),
+    		BlackC = Color3.fromRGB(30,30,30),
+    		BgC = constructcolor(readfile("Zeouron/Settings/BgColor.txt")),
+    		Icon = LoadAsset("LogoCustom.png"),
+    		DiscordLink = "https://discord.com/invite/BjrHC26rUP"
+		}
+    end
+
+local Data = GetTheme()
+
+local function Round(UI,num)
+    local round = Instance.new("UICorner")
+    round.Parent = UI
+    round.CornerRadius = UDim.new(num,num)
 end
 ConstructFolder()
 return {
@@ -69,40 +115,8 @@ return {
 	LoadAsset = LoadAsset,
  	ConstructFolder = ConstructFolder,
   	IsPhone = IsPhone,
-  	Tween = function(tble, times)
-       	local div = times or 2
-       	if tble[2] ~= "Position" and tble[2] ~= "Size" then
-    		local TweenInf0 = TweenInfo.new(tble[3]) 
-			local PlayThis = game:GetService("TweenService"):Create(tble[1], TweenInf0, {[tble[2]] = tble[4]})
-			PlayThis:Play()
-   		else
-     		local setval = tble[4]
-       		if IsPhone() then
-            	setval = UDim2.new(
-					setval.X.Scale, 
-   					setval.X.Offset /times, 
-    				setval.Y.Scale, 
-    				setval.Y.Offset /times
-				)
-            end
-            local TweenInf0 = TweenInfo.new(tble[3]) 
-			local PlayThis = game:GetService("TweenService"):Create(tble[1], TweenInf0, {[tble[2]] = setval})
-			PlayThis:Play()
-  		end
-    end,
- 	GetTheme = function()
-    	return {
-    		Font = Enum.Font[readfile("Zeouron/Settings/Font.txt")],
-    		Color = constructcolor(readfile("Zeouron/Settings/MainColor.txt")),
-    		DarkC = halvecolor(constructcolor(readfile("Zeouron/Settings/MainColor.txt")), 2.5),
-    		DarkerC = halvecolor(halvecolor(constructcolor(readfile("Zeouron/Settings/MainColor.txt")), 2.5),1.5),
-    		DarkestC = halvecolor(halvecolor(constructcolor(readfile("Zeouron/Settings/MainColor.txt")), 2.5),2.5),
-    		BlackC = Color3.fromRGB(30,30,30),
-    		BgC = constructcolor(readfile("Zeouron/Settings/BgColor.txt")),
-    		Icon = T.LoadAsset("LogoCustom.png"),
-    		DiscordLink = "https://discord.com/invite/BjrHC26rUP"
-		}
-    end,
+  	Tween = Tween,
+ 	GetTheme = GetTheme,
 	GetLibrary = function(lib)
         local overwrite = {
             ["UI"] = Github().."Library/UI%20library.lua"
@@ -123,3 +137,4 @@ return {
     end
 }
 end
+return ZTF
