@@ -38,73 +38,6 @@ Remove = SimpleTab.NewTab("Remove")
 Teleportation = SimpleTab.NewTab("Teleportation")
 Misc = SimpleTab.NewTab("Misc")
 
-function Clothing(ID)
-    local args = {
-        [1] = 46,
-        [2] = ID,
-        [3] = "Clothing",
-        [4] = "..ID.."
-    }
-    game:GetService("ReplicatedStorage"):WaitForChild("Import"):FireServer(unpack(args))
-end
-
-function removeall()
-    local s = plr.character:FindFirstChildWhichIsA("Shirt")
-    local p = plr.character:FindFirstChildWhichIsA("Pants")
-    if s ~= nil then
-        local args = {
-            [1] = "Shirt",
-            [2] = "Delete"
-        }
-        game:GetService("ReplicatedStorage").ImportDelete:FireServer(unpack(args))
-    end
-    if p ~= nil then
-        local args = {
-            [1] = "Pants",
-            [2] = "Delete"
-        }
-        game:GetService("ReplicatedStorage").ImportDelete:FireServer(unpack(args))
-    end
-    for i,v in pairs(plr.character:GetDescendants()) do
-        if v.Name == "A" then
-            local args = {
-                [1] = "A",
-                [2] = "Delete"
-            }
-            game:GetService("ReplicatedStorage").ImportDelete:FireServer(unpack(args))
-        end
-    end
-end
-
-function trueremoveall()
-    local s = plr.character:FindFirstChildWhichIsA("Shirt")
-    local p = plr.character:FindFirstChildWhichIsA("Pants")
-    if s ~= nil then
-    local args = {
-    [1] = "Shirt",
-    [2] = "Delete"
-    }
-    game:GetService("ReplicatedStorage").ImportDelete:FireServer(unpack(args))
-    end
-
-    if p ~= nil then
-    local args = {
-    [1] = "Pants",
-    [2] = "Delete"
-    }
-    game:GetService("ReplicatedStorage").ImportDelete:FireServer(unpack(args))
-    end
-    for i,v in pairs(plr.character:GetDescendants()) do
-    if v.Name == "A" or v:IsA("Accessory") then
-    local args = {
-    [1] = v.Name,
-    [2] = "Delete"
-    }
-    game:GetService("ReplicatedStorage").ImportDelete:FireServer(unpack(args))
-    end
-    end
-end
-
 function EquipToolF(ToolFV)
     plr.character:FindFirstChildWhichIsA("Humanoid"):EquipTool(ToolFV)
 end
@@ -246,22 +179,6 @@ Remove.NewButton("Remove Misc",function()
     game.Workspace.BasementCell:Destroy()
 end)
 
-Remove.NewButton("",function() end)
-
-afunction = function() 
-    local atable = {} 
-    for i,v in pairs(game.Workspace:GetChildren()) do 
-        if v:IsA("Tool") and v.Name ~= "Food" then 
-            table.insert(atable, v) 
-        end 
-    end 
-	return atable 
-end
-
-Remove.NewSelector("Remove tool",afunction(),function(value)
-	lp.character.Humanoid:EquipTool(value)
-end)
-
 Tools.NewSelector("Get tool",game.Workspace.Tools:GetChildren(),function(value)
 	fireclickdetector(value.ClickDetector)
 end)
@@ -273,12 +190,10 @@ end)
 Tools.NewSwitch("Fight Pack",function(bool)
     GetFight = bool
     GetFood = bool
-     if bool then
-     while GetFight do
-        fireclickdetector(game.Workspace.Tools.Pickaxe.ClickDetector)
-        wait()
-     end
-end
+    while GetFight do
+       fireclickdetector(game.Workspace.Tools.Pickaxe.ClickDetector)
+       wait()
+    end
 end)
 
 Tools.NewSwitch("Loop get Food",function(bool)
@@ -318,6 +233,7 @@ Tools.NewSwitch("Get dropped",function(bool)
 end,"Equips all Dropped tools")
 
 
+hookspeed = function()
 local mt = getrawmetatable(game)
 setreadonly(mt, false)
 local oldIndex = mt.__index
@@ -330,6 +246,8 @@ mt.__index = function(self, key)
     return oldIndex(self, key)
 end
 setreadonly(mt, true)
+end
+hookspeed()
 
 SetSpeed = 16
 Defensive.NewSlider("Set WalkSpeed", {5,100}, 16,function(number)
@@ -666,19 +584,6 @@ for i,v in pairs(game.Players:GetPlayers()) do
   	end)
 end
 
-for _, asset in pairs(game.Players:GetCharacterAppearanceInfoAsync(lp.UserId).assets) do
-	local assetid = asset.id
-	Clothing(assetid)
-end
-
-lp.CharacterAdded:Connect(function(char)
-    local hum = char:WaitForChild("Humanoid")
-    for _, asset in pairs(game.Players:GetCharacterAppearanceInfoAsync(lp.UserId).assets) do
-		local assetid = asset.id
-		Clothing(assetid)
-    end
-end)
-
 lastcf = CFrame.new(0,0,0)
 
 died = function()
@@ -686,6 +591,7 @@ died = function()
 end
 
 added = function()
+    hookspeed()
     if TBOD or lp.TeamColor == BrickColor.new("Institutional white") then
     	lp.character:WaitForChild("HumanoidRootPart").CFrame = lastcf
     	lp.character:WaitForChild("Humanoid").Died:Connect(died)
@@ -697,22 +603,20 @@ if lp.character:FindFirstChild("Humanoid") then
     lp.character:WaitForChild("Humanoid").Died:Connect(died)
 end
 
-SimpleTab.End()
-
 TPWalking = game:GetService("RunService").Heartbeat:Wait()
-game:GetService("RunService").Stepped:Connect(function()
+game:GetService("RunService").Heartbeat:Connect(function()
+    print("???")
    	SimpleTab.DownValues(DV)
     if SetSpeed ~= 16 then
         lp.character.Humanoid.WalkSpeed = SetSpeed
     end
     if LET then
-        pcall(function()
-            fireclickdetector(game.Workspace.Tools.Axe.ClickDetector)
-            fireclickdetector(game.Workspace.Tools.Pickaxe.ClickDetector)
-            fireclickdetector(game.Workspace.Tools.Taser.ClickDetector)
-            fireclickdetector(game.Workspace.Tools["Handcuffs (fugitive)"].ClickDetector)
-            fireclickdetector(game.Workspace.Tools.Food.Main.ClickDetector)
-        end)
+        print("bruh")
+        fireclickdetector(game.Workspace.Tools.Axe.ClickDetector)
+        fireclickdetector(game.Workspace.Tools.Pickaxe.ClickDetector)
+        fireclickdetector(game.Workspace.Tools.Taser.ClickDetector)
+   		fireclickdetector(game.Workspace.Tools["Handcuffs (fugitive)"].ClickDetector)
+        fireclickdetector(game.Workspace.Tools.Food.Main.ClickDetector)
     end
    	if InfiniteStamina then
         staminaclosure = aux.searchClosure(lp.character:WaitForChild("StaminaSprintClient"), "sprint", 5, {[1] = "SJ",[2] = "Value",[3] = "IsCuffed",[4] = "RagDoll",[5] = "Sit",[6] = "InAnimation"})
@@ -859,3 +763,5 @@ end
 			end
 		end
 	end)
+
+SimpleTab.End()
