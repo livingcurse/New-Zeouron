@@ -58,10 +58,6 @@ GenerateCode = function(func, args)
  	return msg
 end
 
-local FunctionFire = Instance.new("BindableEvent")
-local Enabled = Instance.new("NumberValue")
-Enabled.Value = G.Enabled
-
 local Data = T.GetTheme()
 
 local SelectedName
@@ -72,6 +68,10 @@ local G = Instance.new("ScreenGui",game.CoreGui)
 G.Name = "FunctionSpy"
 G.ResetOnSpawn = false
 G.Enabled = false
+
+local FunctionFire = Instance.new("BindableEvent")
+local Enabled = Instance.new("NumberValue")
+Enabled.Value = G.Enabled
 
 local InvisFrame = Instance.new("Frame", G)
 
