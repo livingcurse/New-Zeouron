@@ -58,6 +58,10 @@ GenerateCode = function(func, args)
  	return msg
 end
 
+local FunctionFire = Instance.new("BindableEvent")
+local Enabled = Instance.new("NumberValue")
+Enabled.Value = G.Enabled
+
 local Data = T.GetTheme()
 
 local SelectedName
@@ -154,7 +158,8 @@ Remove.TextScaled = true
 Remove.ZIndex = 2
 
 Remove.MouseButton1Click:Connect(function()
-    G:Destroy()
+    G.Enabled = false
+    Enabled.Value = false
 end)
 
 local RunCode = Instance.new("TextButton", OptionsFrame)
@@ -227,8 +232,6 @@ Clear.MouseButton1Click:Connect(function()
     end
 end)
 
-local FunctionFire = Instance.new("BindableEvent")
-
 local AddFunc = function(name,args)
     for i,v in pairs(FireBar:GetChildren()) do
         v.Position = UDim2.new(0,10,0,v.Position.Y.Offset +45)
@@ -262,7 +265,7 @@ for i,v in pairs(cs) do
     if typeof(v) == "function" and i ~= "cfro" and i ~= "anim" and i ~= "ag" and i ~= "v2" and i ~= "cast" and i ~= "trsCF" and i ~= "castCF" and i ~= "out" and i ~= "anim2" and i ~= "mobst" then
     	local old = v
    		cs[i] = function(...)
-         	if not table.find(Excluded,i) and G.Parent == game.CoreGui and G.Enabled then
+         	if not table.find(Excluded,i) and Enabled.Value then
          		FunctionFire:Fire(i,{...})
           	end
         	return old(...)
@@ -270,4 +273,4 @@ for i,v in pairs(cs) do
     end
 end
 
-return G
+return {G, Enabled}
