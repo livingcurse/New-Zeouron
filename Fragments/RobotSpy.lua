@@ -142,7 +142,7 @@ Title.Font = Data.Font
 Title.Size = UDim2.new(1,0,0,20)
 Title.TextScaled = true
 
-local Remove = Instance.new("TextLabel",MainFrame)
+local Remove = Instance.new("TextButton",MainFrame)
 
 Remove.Text = "X"
 Remove.BackgroundTransparency = 1
