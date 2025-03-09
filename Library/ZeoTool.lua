@@ -99,14 +99,13 @@ GetTheme = function()
 		}
     end
 
-local Data = GetTheme()
-
 local function Round(UI,num)
     local round = Instance.new("UICorner")
     round.Parent = UI
     round.CornerRadius = UDim.new(num,num)
 end
 ConstructFolder()
+local Data = GetTheme()
 return {
     ConstructColor = constructcolor,
     HalveColor = halvecolor,
