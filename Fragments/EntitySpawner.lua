@@ -36,7 +36,7 @@ end
 local G = Instance.new("ScreenGui", game.CoreGui)
 G.ResetOnSpawn = false
 G.Name = "EntityEditor"
-G.Enabled = true
+G.Enabled = false
 
 local Data = T.GetTheme()
 
@@ -140,7 +140,7 @@ EntitySearch.ZIndex = 11
 local Select = function(entity)
     EntityList.Visible = false
     Selected = entity
-    local EntityData = {
+    EntityData = {
     	["Health"] = Mem.CreatureDatabase[Selected].Stats.MaxHealth,
     	["MaxHealth"] = Mem.CreatureDatabase[Selected].Stats.MaxHealth,
     	["Speed"] = Mem.CreatureDatabase[Selected].Stats.Speed
