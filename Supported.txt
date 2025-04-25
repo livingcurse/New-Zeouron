@@ -5,9 +5,8 @@ return {
         GOTOID = 6933626061,
         GameName = "Tlk Prison",
         WrongSupport = "Please report this to l_l6658",
-        Script = function() 
-            loadstring(game:HttpGet('https://raw.githubusercontent.com/Zeuxtronic/New-Zeouron/refs/heads/main/Fragments/Tlk%20prison.lua'))()
-        end
+        Discontinued = true,
+        Script = loadstring(game:HttpGet('https://raw.githubusercontent.com/Zeuxtronic/New-Zeouron/refs/heads/main/Fragments/Tlk%20prison.lua')),
     },
 	{
      	Type = "GameSupport",
@@ -15,17 +14,14 @@ return {
         GOTOID = 5561268850,
         GameName = "Randomly Generated Droids",
         WrongSupport = "Please go into a run and execute the script, instead of the Lobby",
-        Script = function() 
-            loadstring(game:HttpGet('https://raw.githubusercontent.com/Zeuxtronic/New-Zeouron/refs/heads/main/Fragments/RGD.lua'))()
-        end
+        Discontinued = false,
+        Script = loadstring(game:HttpGet('https://raw.githubusercontent.com/Zeuxtronic/New-Zeouron/refs/heads/main/Fragments/RGD.lua')),
     },
 	{
      	Type = "Engine",
         EngineMain = 5561268850,
         EngineName = "Robot 64",
-        Script = function() 
-            loadstring(game:HttpGet('https://raw.githubusercontent.com/Zeuxtronic/New-Zeouron/refs/heads/main/Fragments/Robot64.lua'))()
-        end,
+        Script = loadstring(game:HttpGet('https://raw.githubusercontent.com/Zeuxtronic/New-Zeouron/refs/heads/main/Fragments/Robot64.lua')),
     	EngineDetectionMethod = function()
          	local isengine = false
           	if game:GetService("Workspace").Name == "stinky" or game:GetService("Workspace"):FindFirstChild("plam") then
