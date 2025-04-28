@@ -40,7 +40,17 @@ Data = {
     OnoffKeybind = "M"
 }
 
+local Icons = T.GetLibrary("Icons")
+
 local isPhone = T.IsPhone
+local Tween = T.Tween
+
+local Round = function(UI,num)
+    local round = Instance.new("UICorner")
+    round.Parent = UI
+    round.CornerRadius = UDim.new(0,num)
+    return Round
+end
 
 downsize = function(descendant)
     if isPhone() then
@@ -67,66 +77,12 @@ for i,v in pairs(game.CoreGui:GetChildren()) do
 end
 
 for i,v in pairs(lp.PlayerGui:GetChildren()) do
-    if v.Name == Data.ScriptName then
+   if v.Name == Data.ScriptName then
         v:Destroy()
-    end
+   	end
 end
 
-local MakeDraggable = function(ui)
-local gui = ui
-
-local dragging
-local dragInput
-local dragStart
-local startPos
-local WILLDRAG = true
-
-function Lerp(a, b, m)
-	return a + (b - a) * m
-end;
-
-local lastMousePos
-local lastGoalPos
-local DRAG_SPEED = (8); -- // The speed of the UI darg.
-function Update(dt)
-    if WILLDRAG then
-	if not (startPos) then return end;
-	if not (dragging) and (lastGoalPos) then
-		gui.Position = UDim2.new(startPos.X.Scale, Lerp(gui.Position.X.Offset, lastGoalPos.X.Offset, dt * DRAG_SPEED), startPos.Y.Scale, Lerp(gui.Position.Y.Offset, lastGoalPos.Y.Offset, dt * DRAG_SPEED))
-		return 
-	end;
-
-	local delta = (lastMousePos - UserInputService:GetMouseLocation())
-	local xGoal = (startPos.X.Offset - delta.X);
-	local yGoal = (startPos.Y.Offset - delta.Y);
-	lastGoalPos = UDim2.new(startPos.X.Scale, xGoal, startPos.Y.Scale, yGoal)
-	gui.Position = UDim2.new(startPos.X.Scale, Lerp(gui.Position.X.Offset, xGoal, dt * DRAG_SPEED), startPos.Y.Scale, Lerp(gui.Position.Y.Offset, yGoal, dt * DRAG_SPEED))
- 	end
-end;
-
-gui.InputBegan:Connect(function(input)
-	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-		dragging = true
-		dragStart = input.Position
-		startPos = gui.Position
-		lastMousePos = UserInputService:GetMouseLocation()
-
-		input.Changed:Connect(function()
-			if input.UserInputState == Enum.UserInputState.End then
-				dragging = false
-			end
-		end)
-	end
-end)
-
-gui.InputChanged:Connect(function(input)
-	if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-		dragInput = input
-	end
-end)
-
-runService.Heartbeat:Connect(Update)
-end
+local MakeDraggable = function(ui) end
     
 local G = Instance.new("ScreenGui", game.CoreGui)
 G.ResetOnSpawn = false
@@ -137,20 +93,24 @@ TabsHolder.Visible = true
 TabsHolder.BackgroundTransparency = 1
 
 local Tabs = 0
+local Keybinds = 0
     
 returntable = {
 	NewTab = function(tabname)
    		Tabs = Tabs +1
     	local counter = Tabs
             
-        local TabFrame = Instance.new("Frame", TabsHolder)
-       	TabFrame.Position = UDim2.new(0,counter *195 -150,0,25)
+        local TabFrame = Instance.new("ScrollingFrame", TabsHolder)
+       	TabFrame.Position = UDim2.new(0,counter *195 -150,0,-30)
         TabFrame.Size = UDim2.new(0,175,0,30)
         TabFrame.BackgroundColor3 = Data.BgColor
         TabFrame.BorderColor3 = Data.BgColor
         TabFrame.Active = true 
 		TabFrame.Selectable = true
-    	MakeDraggable(TabFrame)
+  		TabFrame.ScrollBarImageColor3 = Data.Color
+		TabFrame.ScrollBarImageTransparency = 0
+		TabFrame.CanvasSize = UDim2.new(0,0,0,0)
+  		TabFrame.Name = "TabFrame"
      
      	local TabsContainer = Instance.new("Frame", TabFrame)
       	TabsContainer.Name = "Tabs"
@@ -181,22 +141,41 @@ returntable = {
      	arrow.MouseButton1Click:Connect(function()
         	if TabOpened then
             	TabsContainer.Visible = false
-             	TabFrame.Size = UDim2.new(0,175,0,30)
+             	Tween({
+					TabFrame,
+   					"Size",
+   					0.2,
+   		 			UDim2.new(0,175,0,30)
+				})
               	TabOpened = false
                	arrow.Rotation = 0
             else
             	TabsContainer.Visible = true
-            	TabFrame.Size = UDim2.new(0,175,0,Buttons *30 +30)
+             	Tween({
+					TabFrame,
+   					"Size",
+   					0.2,
+   		 			UDim2.new(0,175,0,Buttons *30 +30)
+				})
              	TabOpened = true
               	arrow.Rotation = 180
             end
         end)
     
+    	runService.Stepped:Connect(function()
+        	if TabFrame.Size.Y.Offset <= 30 then
+            	TabsContainer.Visible = false
+            else
+           		TabsContainer.Visible = true
+         	end
+        end)
+    
     	local SwitchData = {}
 
      	return {
-        	NewButton = function(name, func)
+        	NewButton = function(name, func, settings)
              	Buttons += 1
+              	TabsContainer.Size = UDim2.new(0,175,0,Buttons *30 +60)
               	TabFrame.Size = UDim2.new(0,175,0,Buttons *30 +30)
              
             	local ButtonFrame = Instance.new("Frame", TabsContainer)
@@ -256,7 +235,7 @@ returntable = {
         		local KeybindMobile = Instance.new("TextButton")
     			KeybindMobile.Parent = G
     			KeybindMobile.Size = UDim2.new(0,45,0,45)
-   				KeybindMobile.Position = UDim2.new(math.random(50,95) /100,0,math.random(0,75) /100,0)
+   				KeybindMobile.Position = UDim2.new(0.65,(Keybinds *65)-(math.floor(Keybinds /3)*195),0.3,math.floor(Keybinds/3)*65)
     			KeybindMobile.BackgroundColor3 = Data.DarkC
     			KeybindMobile.BorderColor3 = Data.Color
        			KeybindMobile.BorderSizePixel = 3
@@ -309,9 +288,11 @@ returntable = {
                   		KeybindMobile.Text = keybind
        				end
                 end)
+            	Keybinds = Keybinds +1
             end,
         	NewSelector = function(name,TableReturn,func)
             	Buttons += 1
+             	local DropperEnabled = false
               	TabFrame.Size = UDim2.new(0,175,0,Buttons *30 +30)
              
             	local ButtonFrame = Instance.new("Frame", TabsContainer)
@@ -322,7 +303,7 @@ returntable = {
             
             	local Dropper = Instance.new("ScrollingFrame")
     	    	Dropper.Parent = TabsHolder
-		    	Dropper.Size = UDim2.new(0,145,0,270) -- 270
+		    	Dropper.Size = UDim2.new(0,145,0,0) -- 270
 		   		Dropper.Position = UDim2.new(0,ButtonFrame.AbsolutePosition.X +175,0,ButtonFrame.AbsolutePosition.Y)
 		    	Dropper.BackgroundColor3 = Data.BgColor
 		    	Dropper.BorderColor3 = Data.DarkC
@@ -335,10 +316,15 @@ returntable = {
     
 		    	runService.Heartbeat:Connect(function()
            			if not isPhone() then
-		        	Dropper.Position = UDim2.new(0,ButtonFrame.AbsolutePosition.X +185,0,ButtonFrame.AbsolutePosition.Y)
+		        		Dropper.Position = UDim2.new(0,ButtonFrame.AbsolutePosition.X +185,0,ButtonFrame.AbsolutePosition.Y)
            			else
-              		Dropper.Position = UDim2.new(0,ButtonFrame.AbsolutePosition.X +((145 /1.5) +15),0,ButtonFrame.AbsolutePosition.Y)
+              			Dropper.Position = UDim2.new(0,ButtonFrame.AbsolutePosition.X +((145 /1.5) +15),0,ButtonFrame.AbsolutePosition.Y)
               		end
+            		if Dropper.Size.Y.Offset == 0 then
+                  		Dropper.Visible = false
+                    else
+                    	Dropper.Visible = true
+                 	end
 		        end)
     
 		    	local TextL = Instance.new("TextLabel")
@@ -410,7 +396,7 @@ returntable = {
             		end
           
           			for i,v in pairs(table) do
-                 		if tostring(v):match(str) then
+                 		if string.lower(tostring(v)):match(str) then
                        		local label = Instance.new("TextButton")
     						label.Parent = Scroll
     						label.Size = UDim2.new(1,-28,0,22)
@@ -425,9 +411,14 @@ returntable = {
            					label.AutoButtonColor = false
                 
                 			label.MouseButton1Click:Connect(function()
-                      			onoff = false
+                      			Tween({
+									Dropper,
+   									"Size",
+   									0.2,
+   		 							UDim2.new(0,145,0,0)
+								})
+  								DropperEnabled = false
       							func(v)
-       							Dropper.Visible = false
                    			end)
            					LastPos += 22
                 			Scroll.CanvasSize = UDim2.new(0,0,0,LastPos)
@@ -449,10 +440,22 @@ returntable = {
              		end
                 end)
           		TextFrame.MouseButton1Click:Connect(function()
-              		if Dropper.Visible then
-                    	Dropper.Visible = false
+              		if DropperEnabled then
+                    	Tween({
+							Dropper,
+   							"Size",
+   							0.2,
+   		 					UDim2.new(0,145,0,0)
+						})
+  						DropperEnabled = false
                     else
-                    	Dropper.Visible = true
+                    	Tween({
+							Dropper,
+   							"Size",
+   							0.3,
+   		 					UDim2.new(0,145,0,270)
+						})
+  						DropperEnabled = true
                     end
                 end)
             	arrow.MouseButton1Click:Connect(function()
@@ -498,7 +501,7 @@ returntable = {
     			TextSlider.BackgroundTransparency = 1
     			TextSlider.BorderColor3 = Data.BgColor
   		  		TextSlider.ZIndex = 12
-      		  	TextSlider.TextColor3 = Data.TextColor
+      		  	TextSlider.TextColor3 = halvecolor(Data.TextColor,1.5)
  		       	TextSlider.TextScaled = true
      		   	TextSlider.Text = name
      		   	TextSlider.Font = Data.Font
@@ -512,6 +515,9 @@ returntable = {
     			Box.ZIndex = 10
     			Box.Text = default
      			Box.TextColor3 = Data.TextColor
+        		Box.Font = Data.Font
+          		Box.TextScaled = true
+            	Box.TextSize = 16
           
        			Box.FocusLost:Connect(function()
                 	if Box.Text == "" then
@@ -537,6 +543,15 @@ returntable = {
      				downsize(Label)
     				func(number)
             	end)
+         
+         		return {
+               		Set = function(val,run)
+                    	local run = run or false
+                     	Box.Text = val
+                      	Label.Size = UDim2.new(0,val /max *125,0,20)
+                       	downsize(Label)
+                    end
+               	}
             end,
         	NewTextBox = function(name, default, func)
              	Buttons += 1
@@ -658,7 +673,7 @@ returntable = {
 	End = function()
      	if isPhone() then
 		for i,descendant in pairs(G:GetDescendants()) do
-    		if descendant:IsA("GuiObject") then
+    		if descendant:IsA("GuiObject") and descendant.Parent ~= Go then
        			descendant.Size = UDim2.new(
             		descendant.Size.X.Scale,
         	    	descendant.Size.X.Offset / 1.5, 
@@ -719,7 +734,7 @@ if Data.OnoffButton then
  	Back.BackgroundTransparency = 1
   	Back.BorderColor3 = Data.Color
 	Back.Selectable = true
-	Back.ZIndex = 0 -math.huge
+	Back.ZIndex = -10000
  
  	TabsHolder.Visible = false
   
@@ -760,21 +775,45 @@ if Data.OnoffButton then
 	back2.BorderColor3 = Data.Color
 	back2.Parent = back1
 	back2.ZIndex = 214748362
+ 
+ 	local Disable = function()
+    	local TweenInf0 = TweenInfo.new(0.2) 
+		local PlayThis = TweenService:Create(Back, TweenInf0, {BackgroundTransparency = 1})
+		PlayThis:Play()
+	    TabsHolder.Visible = false
+     	for i,v in pairs(TabsHolder:GetChildren()) do
+          	if v.Name == "TabFrame" then
+               v.Position = UDim2.new(0,v.Position.X.Offset,0,-30)
+        	end
+       	end
+    end
+
+	local Enable = function()
+    	local TweenInf0 = TweenInfo.new(0.2) 
+		local PlayThis = TweenService:Create(Back, TweenInf0, {BackgroundTransparency = 0.3})
+		PlayThis:Play()
+	    TabsHolder.Visible = true
+     	for i,v in pairs(TabsHolder:GetChildren()) do
+          	if v.Name == "TabFrame" then
+               Tween({
+					v,
+   					"Position",
+   					0.5,
+   		 			UDim2.new(0,v.Position.X.Offset,0,25)
+				})
+				wait(0.06)
+        	end
+       	end
+    end
 
 	icon = false
 	Iconz.MouseButton1Click:Connect(function()
 		if icon then
-	       	local TweenInf0 = TweenInfo.new(0.2) 
-			local PlayThis = TweenService:Create(Back, TweenInf0, {BackgroundTransparency = 1})
-			PlayThis:Play()
-	        TabsHolder.Visible = false
-	        icon = false
+	       	Disable()
+         	icon = false
 		else
-	       	local TweenInf0 = TweenInfo.new(0.2) 
-			local PlayThis = TweenService:Create(Back, TweenInf0, {BackgroundTransparency = 0.3})
-			PlayThis:Play()
-	        TabsHolder.Visible = true
-	        icon = true
+	       	Enable()
+         	icon = true
 		end
 		returntable.GuiChanged(icon)
 	end)
