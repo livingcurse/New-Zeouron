@@ -2,6 +2,7 @@ local lp = game.Players.LocalPlayer
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 local runService = (game:GetService("RunService")); 
+local UIS = game:GetService("UserInputService")
 
 if not isfolder("Zeouron/LibraryConfigs") then
     makefolder("Zeouron/LibraryConfigs")
@@ -547,9 +548,12 @@ returntable = {
          		return {
                		Set = function(val,run)
                     	local run = run or false
-                     	Box.Text = val
-                      	Label.Size = UDim2.new(0,val /max *125,0,20)
-                       	downsize(Label)
+                     
+                     	if UIS:GetFocusedTextBox() ~= Box then
+                         	Box.Text = val
+                          	Label.Size = UDim2.new(0,val /max *125,0,20)
+                           	downsize(Label)
+                        end
                     end
                	}
             end,
