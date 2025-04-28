@@ -815,7 +815,7 @@ if Data.OnoffButton then
 
 	icon = false
 	Iconz.MouseButton1Click:Connect(function()
-     	task.spawn(returntable.GuiChanged,icon)
+     	task.spawn(returntable.GuiChanged,not icon)
 		if icon then
 	       	Disable()
          	icon = false
