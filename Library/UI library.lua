@@ -719,6 +719,9 @@ returntable = {
 	Gui = G
 }
 if Data.OnoffButton then
+    local Blur = Instance.new("BlurEffect",game.Lighting)
+    Blur.Size = 0
+    
 	local Go = Instance.new("ScreenGui")
 
 	Go.Parent = lp.PlayerGui
@@ -777,6 +780,8 @@ if Data.OnoffButton then
 	back2.ZIndex = 214748362
  
  	local Disable = function()
+      	Blur.Size = 0
+      
     	local TweenInf0 = TweenInfo.new(0.2) 
 		local PlayThis = TweenService:Create(Back, TweenInf0, {BackgroundTransparency = 1})
 		PlayThis:Play()
@@ -789,6 +794,8 @@ if Data.OnoffButton then
     end
 
 	local Enable = function()
+     	Blur.Size = 20
+     
     	local TweenInf0 = TweenInfo.new(0.2) 
 		local PlayThis = TweenService:Create(Back, TweenInf0, {BackgroundTransparency = 0.3})
 		PlayThis:Play()
@@ -808,6 +815,7 @@ if Data.OnoffButton then
 
 	icon = false
 	Iconz.MouseButton1Click:Connect(function()
+     	task.spawn(returntable.GuiChanged,icon)
 		if icon then
 	       	Disable()
          	icon = false
@@ -815,7 +823,6 @@ if Data.OnoffButton then
 	       	Enable()
          	icon = true
 		end
-		returntable.GuiChanged(icon)
 	end)
 end
 return returntable
