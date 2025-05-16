@@ -810,7 +810,7 @@ if Data.OnoffButton then
 					v,
    					"Position",
    					0.5,
-   		 			UDim2.new(0,v.Position.X.Offset,0,25)
+   		 			UDim2.new(0,v.AbsolutePosition.X,0,25)
 				})
 				wait(0.06)
         	end
@@ -828,5 +828,18 @@ if Data.OnoffButton then
          	icon = true
 		end
 	end)
+
+	game:GetService("UserInputService").InputBegan:Connect(function(input)
+        if input.KeyCode == Enum.KeyCode[Data.OnoffKeybind] then
+        	task.spawn(returntable.GuiChanged,not icon)
+    		if icon then
+    	       	Disable()
+             	icon = false
+    		else
+    	       	Enable()
+             	icon = true
+    		end
+        end
+    end)
 end
 return returntable
