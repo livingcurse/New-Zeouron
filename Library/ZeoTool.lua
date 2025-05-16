@@ -56,9 +56,6 @@ Tween = function(tble, times)
 		PlayThis:Play()
   	end
 end
-UrlEncode = function(txt)
-    return game:GetService("HttpService"):UrlEncode(txt)
-end
 Github = function()
    return "https://raw.githubusercontent.com/Zeuxtronic/New-Zeouron/refs/heads/main/"
 end
@@ -89,18 +86,18 @@ halvecolor = function(color, num)
     return Color3.new(color.R /num, color.G /num, color.B /num)
 end
 GetTheme = function()
-    return {
-        Font = Enum.Font[readfile("Zeouron/Settings/Font.txt")],
-        Color = constructcolor(readfile("Zeouron/Settings/MainColor.txt")),
-        DarkC = halvecolor(constructcolor(readfile("Zeouron/Settings/MainColor.txt")), 2.5),
-        DarkerC = halvecolor(halvecolor(constructcolor(readfile("Zeouron/Settings/MainColor.txt")), 2.5),1.5),
-        DarkestC = halvecolor(halvecolor(constructcolor(readfile("Zeouron/Settings/MainColor.txt")), 2.5),2.5),
-        BlackC = Color3.fromRGB(30,30,30),
-        BgC = constructcolor(readfile("Zeouron/Settings/BgColor.txt")),
-        Icon = LoadAsset("LogoCustom.png"),
-        DiscordLink = "https://discord.com/invite/BjrHC26rUP"
-    }
-end
+    	return {
+    		Font = Enum.Font[readfile("Zeouron/Settings/Font.txt")],
+    		Color = constructcolor(readfile("Zeouron/Settings/MainColor.txt")),
+    		DarkC = halvecolor(constructcolor(readfile("Zeouron/Settings/MainColor.txt")), 2.5),
+    		DarkerC = halvecolor(halvecolor(constructcolor(readfile("Zeouron/Settings/MainColor.txt")), 2.5),1.5),
+    		DarkestC = halvecolor(halvecolor(constructcolor(readfile("Zeouron/Settings/MainColor.txt")), 2.5),2.5),
+    		BlackC = Color3.fromRGB(30,30,30),
+    		BgC = constructcolor(readfile("Zeouron/Settings/BgColor.txt")),
+    		Icon = LoadAsset("LogoCustom.png"),
+    		DiscordLink = "https://discord.com/invite/BjrHC26rUP"
+		}
+    end
 
 local function Round(UI,num)
     local round = Instance.new("UICorner")
@@ -121,21 +118,21 @@ return {
  	GetTheme = GetTheme,
 	GetLibrary = function(lib)
         local overwrite = {
-            ["UI"] = Github().."Library/"..UrlEncode("UI Library")
+            ["UI"] = Github().."Library/UI%20library.lua"
         }
     	local inoverwrite = false
     	for i,v in pairs(overwrite) do
         	if i == lib then
             	inoverwrite = true
-             	return loadstring(game:HttpGet(Github().."Library/"..UrlEncode(lib)..".lua"))()
+             	return loadstring(game:HttpGet(Github().."Library/"..lib..".lua"))()
             end
         end
     	if not inoverwrite then
-    		return loadstring(game:HttpGet(Github().."Library/"..UrlEncode(lib)..".lua"))()
+    		return loadstring(game:HttpGet(Github().."Library/"..lib..".lua"))()
      	end
     end,
 	GetFragment = function(lib)
-    	return loadstring(game:HttpGet(Github().."Fragments/"..UrlEncode(lib)..".lua"))
+    	return loadstring(game:HttpGet(Github().."Fragments/"..lib..".lua"))()
     end
 }
 end
