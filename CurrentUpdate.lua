@@ -1,43 +1,28 @@
-Update 1.5
+Update 1.6
 
-[~] Complete Recode of MainUI Fragment
+MainUI Updates:
+	[-] Disconntinued Tlk prison.
+ 	[+] Label for disconntinued scripts (tlk prison)
 
-Added ALOT of Robot64 engine Features:
-	Beboo Tab:
-		[+] Get Powerup
-		[+] No Damage
-		[+] God Mode
-		[+] Water Fly
-		[+] Inf Jump
+RGD Updates:
+	[+] Major Anti Hazards Improvement
+ 	[+] Godmode
+  	[+] Anti Laser
+   	[+] Funny message when you die
 
-	Map Tab:
-		[~] Made most Get buttons better
-		[-] Remove DLC wall
-    
-	New Visual Tab:
-		[+] RGB Skin
-		[+] Always dance
-		[+] No anims
-		[+] Randomize
-		[+] Spam Hats
-		[+] Spam Skins
-		[+] Scale
-        
-	New Fun Tab:
-		[+] Spawn Icecream
-		[+] Spam Particles
-		[+] Spam Candies
-		[+] Spawn Enemy
-    
-	New Data Tab:
-		[+] "Data Editor" Allows you to basically edit Robot64 memory.
-		[+] Set Candy
-		[+] Set Icecream
-		[+] Set Tokens
-		[+] Reset Clothing
-		[+] Unlock Skins
-		[+] Unlock Hats
-		[+] Save
+[+] New Hours support
+Hours Features Include:
+	[+] Unlock Everything
+	[+] All talents
+	[+] No Cooldown
+	[+] Invincibillity
+	[+] Fast Tempo
+	[+] Spam Projectiles
+	[+] Kill Entities
+	[+] Remove AI
+	[+] Become Host
+	[+] Spawn Entity (custom ui)
+	[+] DLC
 
-This update took abit..
-But i hope you robot64 players enjoy.
+sorry this update took so long, im working on other supports
+but its taking a while to make so i just released it.
