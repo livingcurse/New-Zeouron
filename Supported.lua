@@ -13,7 +13,7 @@ return {
      	Type = "GameSupport",
         ID = 6312903733,
         GOTOID = 5561268850,
-        GameName = "Randomly Generated Droids",
+        GameName = "RGD",
         WrongSupport = "Please go into a run and execute the script, instead of the Lobby",
         Discontinued = false,
         Script = "https://raw.githubusercontent.com/Zeuxtronic/New-Zeouron/refs/heads/main/Fragments/RGD.lua"
