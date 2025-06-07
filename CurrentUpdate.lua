@@ -1,14 +1,16 @@
 Update 1.6
 
+[~] Made some UI Library changes (most are for the script itself but not visual, most important is now you cant drag, sorry.)
+
 MainUI Updates:
 	[-] Disconntinued Tlk prison.
- 	[+] Label for disconntinued scripts (tlk prison)
+	[+] Label for disconntinued scripts (tlk prison)
 
 RGD Updates:
 	[+] Major Anti Hazards Improvement
- 	[+] Godmode
-  	[+] Anti Laser
-   	[+] Funny message when you die
+	[+] Godmode
+	[+] Anti Laser
+	[+] Funny message when you die
 
 [+] New Hours support
 Hours Features Include:
@@ -23,6 +25,3 @@ Hours Features Include:
 	[+] Become Host
 	[+] Spawn Entity (custom ui)
 	[+] DLC
-
-sorry this update took so long, im working on other supports
-but its taking a while to make so i just released it.
