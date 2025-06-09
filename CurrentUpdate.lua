@@ -1,27 +1,21 @@
-Update 1.6
+Update 1.6.3
 
-[~] Made some UI Library changes (most are for the script itself but not visual, most important is now you cant drag, sorry.)
+[-] MainUI Fragment (The fragment that used to execute after Startup)
 
-MainUI Updates:
-	[-] Disconntinued Tlk prison.
-	[+] Label for disconntinued scripts (tlk prison)
+Major Startup changes to replace Mainui:
+	[~] Replaced Debug pannel to Supported pannel
+	Supported Pannel shows all supported games
+  
+	[+] Settings button in the execute pannel
+	[+] Discord button in the execute pannel
+    
+    [+] The Execute button executes the support you are in (like mainui)
 
-RGD Updates:
-	[+] Major Anti Hazards Improvement
-	[+] Godmode
-	[+] Anti Laser
-	[+] Funny message when you die
+UI Library changes:
+	[+] Blurs to background
+	[+] Settings to buttons (will be used in 1.7)
+	[+] You can FINALLY slide Sliders
+	[~] Made Selectors more compact
 
-[+] New Hours support
-Hours Features Include:
-	[+] Unlock Everything
-	[+] All talents
-	[+] No Cooldown
-	[+] Invincibillity
-	[+] Fast Tempo
-	[+] Spam Projectiles
-	[+] Kill Entities
-	[+] Remove AI
-	[+] Become Host
-	[+] Spawn Entity (custom ui)
-	[+] DLC
+i just removed the entirety of mainui 2 updates after recoding it
+im abit stupid eh?
