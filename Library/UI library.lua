@@ -84,7 +84,50 @@ for i,v in pairs(lp.PlayerGui:GetChildren()) do
    	end
 end
 
-local MakeDraggable = function(ui) end
+local dragging
+local MakeDraggable = function(gui) 
+    gui.Active = true
+   	gui.Selectable = true
+    
+    local dg = false
+    local di, sp, spm
+    
+    gui.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            dg = true
+            sp = gui.Position
+            smp = input.Position
+    
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    dg = false
+                end
+            end)
+        end
+    end)
+    
+    gui.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+            di = input
+        end
+    end)
+    
+    game:GetService("UserInputService").InputChanged:Connect(function(input)
+        if dg and input == di then
+            local d = input.Position - smp
+            local nx = sp.X.Offset + d.X
+            local ny = sp.Y.Offset + d.Y
+    
+            local ss = workspace.CurrentCamera.ViewportSize
+            local fs = gui.AbsoluteSize
+    
+            nx = math.clamp(nx, 0, ss.X - fs.X)
+            ny = math.clamp(ny, 0, ss.Y - fs.Y)
+    
+            gui.Position = UDim2.new(0, nx, 0, ny)
+        end
+    end)
+end
 
 local function addBlur(parent)
     -- yoinked from vapev4
@@ -120,16 +163,6 @@ TabsHolder.BackgroundTransparency = 1
 
 local Tabs = 0
 local Keybinds = 0
-
--- ty random devforum guy
-local function getKeys(t)
-    local keys = {}
-    for k in next, t do
-        table.insert(keys, k)
-    end
-    table.sort(keys)
-    return keys
-end
 
 SettingsSetup = function(frame, label, tabname, name, values)
     if not values then return function() end end
@@ -267,7 +300,7 @@ SettingsSetup = function(frame, label, tabname, name, values)
             TextSlider.ZIndex = 12
             TextSlider.TextColor3 = halvecolor(Data.TextColor,1.5)
             TextSlider.TextSize = 20
-            TextSlider.Text = name
+            TextSlider.Text = v[1]
             TextSlider.FontFace = Data.Font
   
            	local Box = Instance.new("TextBox")
@@ -335,6 +368,210 @@ SettingsSetup = function(frame, label, tabname, name, values)
                    	end
                 end
             end)
+        elseif v[2] == "Selector" then
+        	    local DropperEnabled = false
+             
+             	--selector = {"Mode","Selector",{"cooking","lmfao"},2}
+              
+              	local text = v[1]
+              	local TableReturn = v[3]
+              	settings[i] = config[tabname..name..i] or v[3][v[4]]
+             
+             	local func = function(val)
+                	settings[i] = val
+                	config[tabname..name..i] = settings[i]
+                end
+             
+            	local ButtonFrame = Instance.new("Frame", SettingsFrame)
+       			
+        		ButtonFrame.Size = UDim2.new(0,175,0,30)
+        		ButtonFrame.BackgroundTransparency = 1
+          		ButtonFrame.Name = i
+            
+            	local TextFrame = Instance.new("TextButton", ButtonFrame)
+       			TextFrame.Position = UDim2.new(0,8,0,0)
+        		TextFrame.Size = UDim2.new(0,125,0,30)
+        		TextFrame.BackgroundTransparency = 1
+          		TextFrame.TextColor3 = Data.TextColor
+        		TextFrame.TextSize = Data.TextSize
+    			TextFrame.Text = v[1]..": "..tostring(settings[i])
+    			TextFrame.FontFace = Data.Font 
+       			TextFrame.TextXAlignment = "Left"
+          
+            	local Dropper = Instance.new("Frame")
+    	    	Dropper.Parent = TabsHolder
+		    	Dropper.Size = UDim2.new(0,145,0,0) -- 270
+		   		Dropper.Position = UDim2.new(0,ButtonFrame.AbsolutePosition.X +175,0,ButtonFrame.AbsolutePosition.Y)
+		    	Dropper.BackgroundColor3 = Data.BgColor
+		    	Dropper.BorderColor3 = Data.DarkC
+		    	Dropper.ZIndex = math.huge
+		  		Dropper.Name = v[1]
+		  		Dropper.Visible = false
+      
+      			addBlur(Dropper)
+      			Round(Dropper)
+         
+         		local DropperContents = Instance.new("ScrollingFrame")
+    	    	DropperContents.Parent = Dropper
+		    	DropperContents.Size = UDim2.new(1,0,1,0)
+       			DropperContents.BackgroundTransparency = 1
+		     	DropperContents.ScrollBarImageColor3 = Data.Color
+				DropperContents.ScrollBarImageTransparency = 0
+				DropperContents.CanvasSize = UDim2.new(0,0,0,0)
+    
+		    	runService.Heartbeat:Connect(function()
+           			if not isPhone() then
+		        		Dropper.Position = UDim2.new(0,ButtonFrame.AbsolutePosition.X +185,0,ButtonFrame.AbsolutePosition.Y)
+           			else
+              			Dropper.Position = UDim2.new(0,ButtonFrame.AbsolutePosition.X +((145 /1.5) +15),0,ButtonFrame.AbsolutePosition.Y)
+              		end
+            		if Dropper.Size.Y.Offset == 0 then
+                  		Dropper.Visible = false
+                    else
+                    	Dropper.Visible = true
+                 	end
+		        end)
+    
+		    	local TextL = Instance.new("TextLabel")
+   			 	TextL.Parent = DropperContents
+		    	TextL.Size = UDim2.new(0,145,0,20) -- 270
+		   		TextL.Position = UDim2.new(0,0,0,2)
+		    	TextL.BackgroundTransparency = 1
+		    	TextL.ZIndex = math.huge
+    	     	TextL.Text = name
+		      	TextL.FontFace = Data.Font
+		       	TextL.TextColor3 = Data.TextColor
+		        TextL.TextScaled = true
+		        TextL.TextYAlignment = "Top"
+        
+		        local Box = Instance.new("TextBox")
+		    	Box.Parent = DropperContents
+		    	Box.Size = UDim2.new(1,-18,0,22)
+		   		Box.Position = UDim2.new(0,9,0,27)
+		    	Box.BackgroundColor3 = Data.DarkerC
+		     	Box.BorderColor3 = Data.DarkerC
+		    	Box.ZIndex = math.huge
+		     	Box.Text = ""
+		      	Box.PlaceholderText = "Search"
+         		Box.PlaceholderColor3 = Data.Color
+		      	Box.FontFace = Data.Font
+		       	Box.TextColor3 = Data.TextColor
+		        Box.TextScaled = true
+        
+		        local Scroll = Instance.new("ScrollingFrame")
+		    	Scroll.Parent = DropperContents
+		    	Scroll.Size = UDim2.new(0,144,0,197)
+		   		Scroll.Position = UDim2.new(0,0,0,63)	
+		    	Scroll.BackgroundTransparency = 1
+		     	Scroll.BorderColor3 = Data.DarkC
+		    	Scroll.ZIndex = math.huge
+		        Scroll.ScrollBarImageColor3 = Data.Color
+				Scroll.ScrollBarImageTransparency = 1
+				Scroll.CanvasSize = UDim2.new(0,0,0,0)
+    			Scroll.ElasticBehavior = "Never"
+				Scroll.ScrollingDirection = "Y"
+    			Scroll.ScrollBarThickness = 0
+       
+       			local arrowbutton = Instance.new("TextButton")
+    	        arrowbutton.Parent = ButtonFrame
+            	arrowbutton.Size = UDim2.new(0,30,0,30)
+            	arrowbutton.Position = UDim2.new(1,-30,0,0)
+           		arrowbutton.BackgroundTransparency = 1
+             	arrowbutton.Text = ""
+            	arrowbutton.ZIndex = 12
+              
+              	local arrow = Instance.new("ImageLabel")
+            	arrow.Parent = arrowbutton
+            	arrow.Size = UDim2.new(0,18,0,12)
+            	arrow.Position = UDim2.new(0.5,0,0.5,0)
+           		arrow.BackgroundTransparency = 1
+            	arrow.BorderColor3 = arrow.BackgroundColor3
+            	arrow.Image = T.LoadAsset("arrow.png")
+             	arrow.ImageColor3 = Data.Color
+              	arrow.AnchorPoint = Vector2.new(0.5,0.5)
+            	arrow.ZIndex = 11
+             	arrow.Rotation = -90
+              
+       			LoadTable = function(str, table)
+              		print(lastselected)
+              		Scroll.CanvasSize = UDim2.new(0,0,0,0)
+              		local LastPos = 0
+                
+                	for i,v in pairs(Scroll:GetChildren()) do
+            			v:Destroy()
+            		end
+          
+          			for i,v in pairs(table) do
+                 		if string.lower(tostring(v)):match(str) then
+                       		local label = Instance.new("TextButton")
+    						label.Parent = Scroll
+    						label.Size = UDim2.new(1,-18,0,22)
+   							label.Position = UDim2.new(0,9,0,LastPos)
+        					label.BackgroundColor3 = Data.DarkerC
+         					label.BorderColor3 = Data.DarkerC
+    						label.ZIndex = math.huge
+           					label.Text = tostring(v)
+      						label.FontFace = Data.Font
+       						label.TextColor3 = Data.TextColor
+        					label.TextScaled = true
+           					label.AutoButtonColor = false
+                
+                			label.MouseButton1Click:Connect(function()
+                      			Tween({
+									Dropper,
+   									"Size",
+   									0.2,
+   		 							UDim2.new(0,145,0,0)
+								})
+  								DropperEnabled = false
+          						lastselected = v
+                				TextFrame.Text = text..": "..tostring(v)
+      							func(v, Settings)
+                   			end)
+           					LastPos += 22
+                			Scroll.CanvasSize = UDim2.new(0,0,0,LastPos)
+                        end
+                    end
+              	end
+           
+           		if typeof(TableReturn) == "table" then
+           			LoadTable("", TableReturn)
+              	else
+               		LoadTable("", TableReturn())
+             	end
+          
+       			Box:GetPropertyChangedSignal("Text"):Connect(function()
+              		if typeof(TableReturn) == "table" then
+           				LoadTable(Box.Text, TableReturn)
+              		else
+               			LoadTable(Box.Text, TableReturn())
+             		end
+                end)
+          		TextFrame.MouseButton1Click:Connect(function()
+              		if DropperEnabled then
+                    	Tween({
+							Dropper,
+   							"Size",
+   							0.2,
+   		 					UDim2.new(0,145,0,0)
+						})
+  						DropperEnabled = false
+                    else
+                    	Box.Text = ""
+                    	if typeof(TableReturn) == "table" then
+               				LoadTable(Box.Text, TableReturn)
+                  		else
+                   			LoadTable(Box.Text, TableReturn())
+                 		end
+                    	Tween({
+							Dropper,
+   							"Size",
+   							0.3,
+   		 					UDim2.new(0,145,0,270)
+						})
+  						DropperEnabled = true
+                    end
+                end)
         end
     end
     return function() return settings end
@@ -346,7 +583,7 @@ returntable = {
     	local counter = Tabs
         
         local TabFrame = Instance.new("Frame", TabsHolder)
-       	TabFrame.Position = UDim2.new(0,counter *195 -150,0,-30)
+       	TabFrame.Position = UDim2.new(0,counter *195 -150,0,0)
         TabFrame.Size = UDim2.new(0,175,0,30)
         TabFrame.BackgroundColor3 = Data.BgColor
         TabFrame.BorderColor3 = Data.BgColor
@@ -357,6 +594,7 @@ returntable = {
    		
      	addBlur(TabFrame)
       	Round(TabFrame)
+       	MakeDraggable(TabFrame)
      
      	local TabsContainer = Instance.new("ScrollingFrame", TabFrame)
       	TabsContainer.Name = "Tabs"
@@ -555,7 +793,7 @@ returntable = {
                 end)
             	Keybinds = Keybinds +1
             end,
-        	NewSelector = function(name,TableReturn,func, settings)
+        	NewSelector = function(name,TableReturn,func,settings)
             	Buttons += 1
              	local DropperEnabled = false
              
@@ -627,8 +865,8 @@ returntable = {
 		    	Box.Parent = DropperContents
 		    	Box.Size = UDim2.new(1,-18,0,22)
 		   		Box.Position = UDim2.new(0,9,0,27)
-		    	Box.BackgroundColor3 = Data.DarkC
-		     	Box.BorderColor3 = Data.DarkC
+		    	Box.BackgroundColor3 = Data.DarkerC
+		     	Box.BorderColor3 = Data.DarkerC
 		    	Box.ZIndex = math.huge
 		     	Box.Text = ""
 		      	Box.PlaceholderText = "Search"
@@ -671,6 +909,7 @@ returntable = {
             	arrow.ZIndex = 11
              	arrow.Rotation = -90
               
+              	local lastselected
        			LoadTable = function(str, table)
               		Scroll.CanvasSize = UDim2.new(0,0,0,0)
               		local LastPos = 0
@@ -685,8 +924,13 @@ returntable = {
     						label.Parent = Scroll
     						label.Size = UDim2.new(1,-18,0,22)
    							label.Position = UDim2.new(0,9,0,LastPos)
-    						label.BackgroundColor3 = Data.DarkC
-     						label.BorderColor3 = Data.DarkC
+          					if lastselected ~= v then
+        						label.BackgroundColor3 = Data.DarkerC
+         						label.BorderColor3 = Data.DarkerC
+               				else
+                   				label.BackgroundColor3 = Data.DarkC
+         						label.BorderColor3 = Data.DarkC
+           					end
     						label.ZIndex = math.huge
            					label.Text = tostring(v)
       						label.FontFace = Data.Font
@@ -702,6 +946,7 @@ returntable = {
    		 							UDim2.new(0,145,0,0)
 								})
   								DropperEnabled = false
+          						lastselected = v
       							func(v, Settings)
                    			end)
            					LastPos += 22
@@ -733,6 +978,12 @@ returntable = {
 						})
   						DropperEnabled = false
                     else
+                    	Box.Text = ""
+                    	if typeof(TableReturn) == "table" then
+               				LoadTable(Box.Text, TableReturn)
+                  		else
+                   			LoadTable(Box.Text, TableReturn())
+                 		end
                     	Tween({
 							Dropper,
    							"Size",
@@ -1098,11 +1349,6 @@ if Data.OnoffButton then
 		local PlayThis = TweenService:Create(Back, TweenInf0, {BackgroundTransparency = 1})
 		PlayThis:Play()
 	    TabsHolder.Visible = false
-     	for i,v in pairs(TabsHolder:GetChildren()) do
-          	if v.Name == "TabFrame" then
-               v.Position = UDim2.new(0,v.Position.X.Offset,0,-30)
-        	end
-       	end
     end
 
 	local Enable = function()
@@ -1111,18 +1357,7 @@ if Data.OnoffButton then
     	local TweenInf0 = TweenInfo.new(0.2) 
 		local PlayThis = TweenService:Create(Back, TweenInf0, {BackgroundTransparency = 0.3})
 		PlayThis:Play()
-	    TabsHolder.Visible = true
-     	for i,v in pairs(TabsHolder:GetChildren()) do
-          	if v.Name == "TabFrame" then
-               Tween({
-					v,
-   					"Position",
-   					0.5,
-   		 			UDim2.new(0,v.AbsolutePosition.X,0,25)
-				})
-				wait(0.06)
-        	end
-       	end
+  		TabsHolder.Visible = true
     end
 
 	icon = false
