@@ -165,7 +165,7 @@ local Tabs = 0
 local Keybinds = 0
 
 SettingsSetup = function(frame, label, tabname, name, values)
-    if not values then return function() end end
+    if not values or typeof(values) == "string" then return function() end end
     
     local Open = false
     
