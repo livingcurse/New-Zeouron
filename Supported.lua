@@ -39,5 +39,14 @@ return {
             end
         	return isengine
         end
+    },
+	{
+     	Type = "GameSupport",
+        ID = 12887407169,
+        GOTOID = 12887407169,
+        GameName = "SROMU",
+        WrongSupport = "yahoo Please report this to l_l6658",
+        Discontinued = false,
+        Script = "https://raw.githubusercontent.com/Zeuxtronic/New-Zeouron/refs/heads/main/Fragments/Hours.lua"
     }
 }
