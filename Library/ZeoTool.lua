@@ -57,7 +57,7 @@ Tween = function(tble, times)
   	end
 end
 Github = function()
-   return "https://raw.githubusercontent.com/Zeuxtronic/New-Zeouron/refs/heads/main/"
+   return "https://raw.githubusercontent.com/livingcurse/New-Zeouron/refs/heads/main/"
 end
 DownloadAsset = function(asset)
     local succ,res = pcall(function() return game:HttpGet(Github().."Assets/"..asset) end)
